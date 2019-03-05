@@ -306,9 +306,44 @@ DFMBlockDevice *DFMDiskManager::createBlockDevice(const QString &path, QObject *
     return new DFMBlockDevice(path, parent);
 }
 
+DFMBlockDevice *DFMDiskManager::createBlockDeviceByDevicePath(const QByteArray &path, QObject *parent) const
+{
+    for (const QString &block : blockDevices()) {
+        DFMBlockDevice *device = new DFMBlockDevice(block, parent);
+
+        if (device->device() == path) {
+            return device;
+        }
+
+        device->deleteLater();
+    }
+
+    return nullptr;
+}
+
 DFMBlockPartition *DFMDiskManager::createBlockPartition(const QString &path, QObject *parent)
 {
     return new DFMBlockPartition(path, parent);
+}
+
+DFMBlockPartition *DFMDiskManager::createBlockPartitionByMountPoint(const QByteArray &path, QObject *parent) const
+{
+    for (const QString &block : blockDevices()) {
+        DFMBlockPartition *device = new DFMBlockPartition(block, parent);
+
+        if (device->mountPoints().contains(path)) {
+            return device;
+        }
+
+        device->deleteLater();
+    }
+
+    return nullptr;
+}
+
+DFMBlockPartition *DFMDiskManager::createBlockPartition(const QStorageInfo &info, QObject *parent) const
+{
+    return createBlockPartitionByMountPoint(info.rootPath().toLocal8Bit() + '\0', parent);
 }
 
 DFMDiskDevice *DFMDiskManager::createDiskDevice(const QString &path, QObject *parent)

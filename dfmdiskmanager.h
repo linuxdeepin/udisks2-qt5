@@ -25,7 +25,10 @@
 #include <QMap>
 #include <QDBusError>
 
+QT_BEGIN_NAMESPACE
 class QDBusObjectPath;
+class QStorageInfo;
+QT_END_NAMESPACE
 
 class DFMBlockDevice;
 class DFMBlockPartition;
@@ -49,7 +52,12 @@ public:
 
     static QString objectPrintable(const QObject *object);
     static DFMBlockDevice *createBlockDevice(const QString &path, QObject *parent = nullptr);
+    // device 路径以 '\0' 结尾
+    DFMBlockDevice *createBlockDeviceByDevicePath(const QByteArray &path, QObject *parent = nullptr) const;
     static DFMBlockPartition *createBlockPartition(const QString &path, QObject *parent = nullptr);
+    // 挂载点以 '\0' 结尾
+    DFMBlockPartition *createBlockPartitionByMountPoint(const QByteArray &path, QObject *parent = nullptr) const;
+    DFMBlockPartition *createBlockPartition(const QStorageInfo &info, QObject *parent) const;
     static DFMDiskDevice *createDiskDevice(const QString &path, QObject *parent = nullptr);
 
     static QDBusError lastError();
