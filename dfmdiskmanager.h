@@ -57,7 +57,7 @@ public:
     static DFMBlockPartition *createBlockPartition(const QString &path, QObject *parent = nullptr);
     // 挂载点以 '\0' 结尾
     DFMBlockPartition *createBlockPartitionByMountPoint(const QByteArray &path, QObject *parent = nullptr) const;
-    DFMBlockPartition *createBlockPartition(const QStorageInfo &info, QObject *parent) const;
+    DFMBlockPartition *createBlockPartition(const QStorageInfo &info, QObject *parent = nullptr) const;
     static DFMDiskDevice *createDiskDevice(const QString &path, QObject *parent = nullptr);
 
     static QDBusError lastError();
