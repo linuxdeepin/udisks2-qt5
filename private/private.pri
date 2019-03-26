@@ -1,2 +1,2 @@
 HEADERS += \
-    $$PWD/dfmblockdevice_p.h
+    $$PWD/dblockdevice_p.h

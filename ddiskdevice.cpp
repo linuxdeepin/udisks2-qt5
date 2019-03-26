@@ -18,190 +18,190 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "dfmdiskdevice.h"
+#include "ddiskdevice.h"
 #include "udisks2_interface.h"
 
-class DFMDiskDevicePrivate
+class DDiskDevicePrivate
 {
 public:
     OrgFreedesktopUDisks2DriveInterface *dbus = nullptr;
 };
 
-DFMDiskDevice::DFMDiskDevice(const QString &path, QObject *parent)
+DDiskDevice::DDiskDevice(const QString &path, QObject *parent)
     : QObject(parent)
-    , d_ptr(new DFMDiskDevicePrivate())
+    , d_ptr(new DDiskDevicePrivate())
 {
     d_ptr->dbus = new OrgFreedesktopUDisks2DriveInterface(UDISKS2_SERVICE, path, QDBusConnection::systemBus(), this);
 }
 
-DFMDiskDevice::~DFMDiskDevice()
+DDiskDevice::~DDiskDevice()
 {
 
 }
 
-QString DFMDiskDevice::path() const
+QString DDiskDevice::path() const
 {
-    Q_D(const DFMDiskDevice);
+    Q_D(const DDiskDevice);
 
     return d->dbus->path();
 }
 
-bool DFMDiskDevice::canPowerOff() const
+bool DDiskDevice::canPowerOff() const
 {
     return d_ptr->dbus->canPowerOff();
 }
 
-QVariantMap DFMDiskDevice::configuration() const
+QVariantMap DDiskDevice::configuration() const
 {
     return d_ptr->dbus->configuration();
 }
 
-QString DFMDiskDevice::connectionBus() const
+QString DDiskDevice::connectionBus() const
 {
     return d_ptr->dbus->connectionBus();
 }
 
-bool DFMDiskDevice::ejectable() const
+bool DDiskDevice::ejectable() const
 {
     return d_ptr->dbus->ejectable();
 }
 
-QString DFMDiskDevice::id() const
+QString DDiskDevice::id() const
 {
     return d_ptr->dbus->id();
 }
 
-QString DFMDiskDevice::media() const
+QString DDiskDevice::media() const
 {
     return d_ptr->dbus->media();
 }
 
-bool DFMDiskDevice::mediaAvailable() const
+bool DDiskDevice::mediaAvailable() const
 {
     return d_ptr->dbus->mediaAvailable();
 }
 
-bool DFMDiskDevice::mediaChangeDetected() const
+bool DDiskDevice::mediaChangeDetected() const
 {
     return d_ptr->dbus->mediaChangeDetected();
 }
 
-QStringList DFMDiskDevice::mediaCompatibility() const
+QStringList DDiskDevice::mediaCompatibility() const
 {
     return d_ptr->dbus->mediaCompatibility();
 }
 
-bool DFMDiskDevice::mediaRemovable() const
+bool DDiskDevice::mediaRemovable() const
 {
     return d_ptr->dbus->mediaRemovable();
 }
 
-QString DFMDiskDevice::model() const
+QString DDiskDevice::model() const
 {
     return d_ptr->dbus->model();
 }
 
-bool DFMDiskDevice::optical() const
+bool DDiskDevice::optical() const
 {
     return d_ptr->dbus->optical();
 }
 
-bool DFMDiskDevice::opticalBlank() const
+bool DDiskDevice::opticalBlank() const
 {
     return d_ptr->dbus->opticalBlank();
 }
 
-uint DFMDiskDevice::opticalNumAudioTracks() const
+uint DDiskDevice::opticalNumAudioTracks() const
 {
     return d_ptr->dbus->opticalNumAudioTracks();
 }
 
-uint DFMDiskDevice::opticalNumDataTracks() const
+uint DDiskDevice::opticalNumDataTracks() const
 {
     return d_ptr->dbus->opticalNumDataTracks();
 }
 
-uint DFMDiskDevice::opticalNumSessions() const
+uint DDiskDevice::opticalNumSessions() const
 {
     return d_ptr->dbus->opticalNumSessions();
 }
 
-uint DFMDiskDevice::opticalNumTracks() const
+uint DDiskDevice::opticalNumTracks() const
 {
     return d_ptr->dbus->opticalNumTracks();
 }
 
-bool DFMDiskDevice::removable() const
+bool DDiskDevice::removable() const
 {
     return d_ptr->dbus->removable();
 }
 
-QString DFMDiskDevice::revision() const
+QString DDiskDevice::revision() const
 {
     return d_ptr->dbus->revision();
 }
 
-int DFMDiskDevice::rotationRate() const
+int DDiskDevice::rotationRate() const
 {
     return d_ptr->dbus->rotationRate();
 }
 
-QString DFMDiskDevice::seat() const
+QString DDiskDevice::seat() const
 {
     return d_ptr->dbus->seat();
 }
 
-QString DFMDiskDevice::serial() const
+QString DDiskDevice::serial() const
 {
     return d_ptr->dbus->serial();
 }
 
-QString DFMDiskDevice::siblingId() const
+QString DDiskDevice::siblingId() const
 {
     return d_ptr->dbus->siblingId();
 }
 
-qulonglong DFMDiskDevice::size() const
+qulonglong DDiskDevice::size() const
 {
     return d_ptr->dbus->size();
 }
 
-QString DFMDiskDevice::sortKey() const
+QString DDiskDevice::sortKey() const
 {
     return d_ptr->dbus->sortKey();
 }
 
-qulonglong DFMDiskDevice::timeDetected() const
+qulonglong DDiskDevice::timeDetected() const
 {
     return d_ptr->dbus->timeDetected();
 }
 
-qulonglong DFMDiskDevice::timeMediaDetected() const
+qulonglong DDiskDevice::timeMediaDetected() const
 {
     return d_ptr->dbus->timeMediaDetected();
 }
 
-QString DFMDiskDevice::vendor() const
+QString DDiskDevice::vendor() const
 {
     return d_ptr->dbus->vendor();
 }
 
-QString DFMDiskDevice::WWN() const
+QString DDiskDevice::WWN() const
 {
     return d_ptr->dbus->wWN();
 }
 
-void DFMDiskDevice::eject(const QVariantMap &options)
+void DDiskDevice::eject(const QVariantMap &options)
 {
     d_ptr->dbus->Eject(options);
 }
 
-void DFMDiskDevice::powerOff(const QVariantMap &options)
+void DDiskDevice::powerOff(const QVariantMap &options)
 {
     d_ptr->dbus->PowerOff(options);
 }
 
-void DFMDiskDevice::setConfiguration(const QVariantMap &value, const QVariantMap &options)
+void DDiskDevice::setConfiguration(const QVariantMap &value, const QVariantMap &options)
 {
     d_ptr->dbus->SetConfiguration(value, options);
 }

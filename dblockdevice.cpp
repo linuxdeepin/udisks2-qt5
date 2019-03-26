@@ -18,20 +18,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "dfmblockdevice.h"
-#include "private/dfmblockdevice_p.h"
+#include "dblockdevice.h"
+#include "private/dblockdevice_p.h"
 #include "udisks2_interface.h"
 #include "objectmanager_interface.h"
 
-DFMBlockDevicePrivate::DFMBlockDevicePrivate(DFMBlockDevice *qq)
+DBlockDevicePrivate::DBlockDevicePrivate(DBlockDevice *qq)
     : q_ptr(qq)
 {
 
 }
 
-void DFMBlockDevice::onInterfacesAdded(const QDBusObjectPath &object_path, const QMap<QString, QVariantMap> &interfaces_and_properties)
+void DBlockDevice::onInterfacesAdded(const QDBusObjectPath &object_path, const QMap<QString, QVariantMap> &interfaces_and_properties)
 {
-    Q_D(DFMBlockDevice);
+    Q_D(DBlockDevice);
 
     const QString &path = object_path.path();
 
@@ -51,9 +51,9 @@ void DFMBlockDevice::onInterfacesAdded(const QDBusObjectPath &object_path, const
     }
 }
 
-void DFMBlockDevice::onInterfacesRemoved(const QDBusObjectPath &object_path, const QStringList &interfaces)
+void DBlockDevice::onInterfacesRemoved(const QDBusObjectPath &object_path, const QStringList &interfaces)
 {
-    Q_D(DFMBlockDevice);
+    Q_D(DBlockDevice);
 
     const QString &path = object_path.path();
 
@@ -71,7 +71,7 @@ void DFMBlockDevice::onInterfacesRemoved(const QDBusObjectPath &object_path, con
     }
 }
 
-void DFMBlockDevice::onPropertiesChanged(const QString &interface, const QVariantMap &changed_properties)
+void DBlockDevice::onPropertiesChanged(const QString &interface, const QVariantMap &changed_properties)
 {
     if (interface.endsWith(".PartitionTable")) {
         auto begin = changed_properties.begin();
@@ -111,21 +111,21 @@ void DFMBlockDevice::onPropertiesChanged(const QString &interface, const QVarian
     }
 }
 
-DFMBlockDevice::~DFMBlockDevice()
+DBlockDevice::~DBlockDevice()
 {
 
 }
 
-bool DFMBlockDevice::isValid() const
+bool DBlockDevice::isValid() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->isValid();
 }
 
-bool DFMBlockDevice::watchChanges() const
+bool DBlockDevice::watchChanges() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->watchChanges;
 }
@@ -135,23 +135,23 @@ bool DFMBlockDevice::watchChanges() const
  *
  * \return the DBus path
  */
-QString DFMBlockDevice::path() const
+QString DBlockDevice::path() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->path();
 }
 
-QList<QPair<QString, QVariantMap> > DFMBlockDevice::configuration() const
+QList<QPair<QString, QVariantMap> > DBlockDevice::configuration() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->configuration();
 }
 
-QString DFMBlockDevice::cryptoBackingDevice() const
+QString DBlockDevice::cryptoBackingDevice() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->cryptoBackingDevice().path();
 }
@@ -161,16 +161,16 @@ QString DFMBlockDevice::cryptoBackingDevice() const
  *
  * \return Device path in QByteArray.
  */
-QByteArray DFMBlockDevice::device() const
+QByteArray DBlockDevice::device() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->device();
 }
 
-qulonglong DFMBlockDevice::deviceNumber() const
+qulonglong DBlockDevice::deviceNumber() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->deviceNumber();
 }
@@ -180,84 +180,84 @@ qulonglong DFMBlockDevice::deviceNumber() const
  *
  * \return a dbus path in QString
  */
-QString DFMBlockDevice::drive() const
+QString DBlockDevice::drive() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->drive().path();
 }
 
-bool DFMBlockDevice::hintAuto() const
+bool DBlockDevice::hintAuto() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->hintAuto();
 }
 
-QString DFMBlockDevice::hintIconName() const
+QString DBlockDevice::hintIconName() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->hintIconName();
 }
 
-bool DFMBlockDevice::hintIgnore() const
+bool DBlockDevice::hintIgnore() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->hintIgnore();
 }
 
-QString DFMBlockDevice::hintName() const
+QString DBlockDevice::hintName() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->hintName();
 }
 
-bool DFMBlockDevice::hintPartitionable() const
+bool DBlockDevice::hintPartitionable() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->hintPartitionable();
 }
 
-QString DFMBlockDevice::hintSymbolicIconName() const
+QString DBlockDevice::hintSymbolicIconName() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->hintSymbolicIconName();
 }
 
-bool DFMBlockDevice::hintSystem() const
+bool DBlockDevice::hintSystem() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->hintSystem();
 }
 
-QString DFMBlockDevice::id() const
+QString DBlockDevice::id() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->id();
 }
 
-QString DFMBlockDevice::idLabel() const
+QString DBlockDevice::idLabel() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->idLabel();
 }
 
-QString DFMBlockDevice::idType() const
+QString DBlockDevice::idType() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->idType();
 }
 
-DFMBlockDevice::FSType DFMBlockDevice::fsType() const
+DBlockDevice::FSType DBlockDevice::fsType() const
 {
     const QString &fs_type = idType();
 
@@ -279,125 +279,125 @@ DFMBlockDevice::FSType DFMBlockDevice::fsType() const
     return static_cast<FSType>(value);
 }
 
-QString DFMBlockDevice::idUUID() const
+QString DBlockDevice::idUUID() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->idUUID();
 }
 
-QString DFMBlockDevice::idUsage() const
+QString DBlockDevice::idUsage() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->idUsage();
 }
 
-QString DFMBlockDevice::idVersion() const
+QString DBlockDevice::idVersion() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->idVersion();
 }
 
-QString DFMBlockDevice::mDRaid() const
+QString DBlockDevice::mDRaid() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->mDRaid().path();
 }
 
-QString DFMBlockDevice::mDRaidMember() const
+QString DBlockDevice::mDRaidMember() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->mDRaidMember().path();
 }
 
-QByteArray DFMBlockDevice::preferredDevice() const
+QByteArray DBlockDevice::preferredDevice() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->preferredDevice();
 }
 
-bool DFMBlockDevice::readOnly() const
+bool DBlockDevice::readOnly() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->readOnly();
 }
 
-qulonglong DFMBlockDevice::size() const
+qulonglong DBlockDevice::size() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->size();
 }
 
-QByteArrayList DFMBlockDevice::symlinks() const
+QByteArrayList DBlockDevice::symlinks() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->symlinks();
 }
 
-QStringList DFMBlockDevice::userspaceMountOptions() const
+QStringList DBlockDevice::userspaceMountOptions() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return d->dbus->userspaceMountOptions();
 }
 
-bool DFMBlockDevice::hasFileSystem() const
+bool DBlockDevice::hasFileSystem() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return hasFileSystem(d->dbus->path());
 }
 
-bool DFMBlockDevice::hasPartition() const
+bool DBlockDevice::hasPartition() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return hasPartition(d->dbus->path());
 }
 
-bool DFMBlockDevice::isEncrypted() const
+bool DBlockDevice::isEncrypted() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return isEncrypted(d->dbus->path());
 }
 
-bool DFMBlockDevice::isLoopDevice() const
+bool DBlockDevice::isLoopDevice() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     return UDisks2::interfaceIsExistes(d->dbus->path(), UDISKS2_SERVICE ".Loop");
 }
 
-bool DFMBlockDevice::hasFileSystem(const QString &path)
+bool DBlockDevice::hasFileSystem(const QString &path)
 {
     return UDisks2::interfaceIsExistes(path, UDISKS2_SERVICE ".Filesystem");
 }
 
-bool DFMBlockDevice::hasPartition(const QString &path)
+bool DBlockDevice::hasPartition(const QString &path)
 {
     return UDisks2::interfaceIsExistes(path, UDISKS2_SERVICE ".Partition");
 }
 
-bool DFMBlockDevice::isEncrypted(const QString &path)
+bool DBlockDevice::isEncrypted(const QString &path)
 {
     return UDisks2::interfaceIsExistes(path, UDISKS2_SERVICE ".Encrypted");
 }
 
-QByteArrayList DFMBlockDevice::mountPoints() const
+QByteArrayList DBlockDevice::mountPoints() const
 {
     if (!hasFileSystem())
         return QByteArrayList();
 
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     QDBusInterface ud2(UDISKS2_SERVICE, d->dbus->path(), "org.freedesktop.DBus.Properties", QDBusConnection::systemBus());
     QDBusReply<QVariant> reply = ud2.call("Get", UDISKS2_SERVICE ".Filesystem", "MountPoints");
@@ -405,9 +405,9 @@ QByteArrayList DFMBlockDevice::mountPoints() const
     return qdbus_cast<QByteArrayList>(reply.value());
 }
 
-DFMBlockDevice::PTType DFMBlockDevice::ptType() const
+DBlockDevice::PTType DBlockDevice::ptType() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     if (!UDisks2::interfaceIsExistes(d->dbus->path(), UDISKS2_SERVICE ".PartitionTable")) {
         return InvalidPT;
@@ -433,9 +433,9 @@ DFMBlockDevice::PTType DFMBlockDevice::ptType() const
     return UnknowPT;
 }
 
-QList<QPair<QString, QVariantMap> > DFMBlockDevice::childConfiguration() const
+QList<QPair<QString, QVariantMap> > DBlockDevice::childConfiguration() const
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     if (!isEncrypted()) {
         return QList<QPair<QString, QVariantMap>>();
@@ -447,9 +447,9 @@ QList<QPair<QString, QVariantMap> > DFMBlockDevice::childConfiguration() const
     return qdbus_cast<QList<QPair<QString, QVariantMap>>>(reply.value());
 }
 
-void DFMBlockDevice::setWatchChanges(bool watchChanges)
+void DBlockDevice::setWatchChanges(bool watchChanges)
 {
-    Q_D(DFMBlockDevice);
+    Q_D(DBlockDevice);
 
     if (d->watchChanges == watchChanges)
         return;
@@ -461,38 +461,38 @@ void DFMBlockDevice::setWatchChanges(bool watchChanges)
 
     if (watchChanges) {
         connect(object_manager, &OrgFreedesktopDBusObjectManagerInterface::InterfacesAdded,
-                this, &DFMBlockDevice::onInterfacesAdded);
+                this, &DBlockDevice::onInterfacesAdded);
         connect(object_manager, &OrgFreedesktopDBusObjectManagerInterface::InterfacesRemoved,
-                this, &DFMBlockDevice::onInterfacesRemoved);
+                this, &DBlockDevice::onInterfacesRemoved);
 
         sb.connect(UDISKS2_SERVICE, d->dbus->path(), "org.freedesktop.DBus.Properties",
                    "PropertiesChanged", this, SLOT(onPropertiesChanged(const QString &, const QVariantMap &)));
     } else {
         disconnect(object_manager, &OrgFreedesktopDBusObjectManagerInterface::InterfacesAdded,
-                   this, &DFMBlockDevice::onInterfacesAdded);
+                   this, &DBlockDevice::onInterfacesAdded);
         disconnect(object_manager, &OrgFreedesktopDBusObjectManagerInterface::InterfacesRemoved,
-                   this, &DFMBlockDevice::onInterfacesRemoved);
+                   this, &DBlockDevice::onInterfacesRemoved);
 
         sb.disconnect(UDISKS2_SERVICE, d->dbus->path(), "org.freedesktop.DBus.Properties",
                       "PropertiesChanged", this, SLOT(onPropertiesChanged(const QString &, const QVariantMap &)));
     }
 }
 
-void DFMBlockDevice::addConfigurationItem(const QPair<QString, QVariantMap> &item, const QVariantMap &options)
+void DBlockDevice::addConfigurationItem(const QPair<QString, QVariantMap> &item, const QVariantMap &options)
 {
-    Q_D(DFMBlockDevice);
+    Q_D(DBlockDevice);
 
     d->dbus->AddConfigurationItem(item, options);
 }
 
-void DFMBlockDevice::format(const QString &type, const QVariantMap &options)
+void DBlockDevice::format(const QString &type, const QVariantMap &options)
 {
-    Q_D(DFMBlockDevice);
+    Q_D(DBlockDevice);
 
     d->dbus->Format(type, options);
 }
 
-void DFMBlockDevice::format(const DFMBlockDevice::FSType &type, const QVariantMap &options)
+void DBlockDevice::format(const DBlockDevice::FSType &type, const QVariantMap &options)
 {
     if (type < ext2)
         return;
@@ -500,58 +500,58 @@ void DFMBlockDevice::format(const DFMBlockDevice::FSType &type, const QVariantMa
     format(QString::fromLatin1(QMetaEnum::fromType<FSType>().valueToKey(type)), options);
 }
 
-QList<QPair<QString, QVariantMap> > DFMBlockDevice::getSecretConfiguration(const QVariantMap &options)
+QList<QPair<QString, QVariantMap> > DBlockDevice::getSecretConfiguration(const QVariantMap &options)
 {
-    Q_D(DFMBlockDevice);
+    Q_D(DBlockDevice);
 
     return d->dbus->GetSecretConfiguration(options);
 }
 
-QDBusUnixFileDescriptor DFMBlockDevice::openDevice(const QString &mode, const QVariantMap &options)
+QDBusUnixFileDescriptor DBlockDevice::openDevice(const QString &mode, const QVariantMap &options)
 {
-    Q_D(DFMBlockDevice);
+    Q_D(DBlockDevice);
 
     return d->dbus->OpenDevice(mode, options);
 }
 
-QDBusUnixFileDescriptor DFMBlockDevice::openForBackup(const QVariantMap &options)
+QDBusUnixFileDescriptor DBlockDevice::openForBackup(const QVariantMap &options)
 {
-    Q_D(DFMBlockDevice);
+    Q_D(DBlockDevice);
 
     return d->dbus->OpenForBackup(options);
 }
 
-QDBusUnixFileDescriptor DFMBlockDevice::openForBenchmark(const QVariantMap &options)
+QDBusUnixFileDescriptor DBlockDevice::openForBenchmark(const QVariantMap &options)
 {
-    Q_D(DFMBlockDevice);
+    Q_D(DBlockDevice);
 
     return d->dbus->OpenForBenchmark(options);
 }
 
-QDBusUnixFileDescriptor DFMBlockDevice::openForRestore(const QVariantMap &options)
+QDBusUnixFileDescriptor DBlockDevice::openForRestore(const QVariantMap &options)
 {
-    Q_D(DFMBlockDevice);
+    Q_D(DBlockDevice);
 
     return d->dbus->OpenForRestore(options);
 }
 
-void DFMBlockDevice::removeConfigurationItem(const QPair<QString, QVariantMap> &item, const QVariantMap &options)
+void DBlockDevice::removeConfigurationItem(const QPair<QString, QVariantMap> &item, const QVariantMap &options)
 {
-    Q_D(DFMBlockDevice);
+    Q_D(DBlockDevice);
 
     d->dbus->RemoveConfigurationItem(item, options);
 }
 
-void DFMBlockDevice::rescan(const QVariantMap &options)
+void DBlockDevice::rescan(const QVariantMap &options)
 {
-    Q_D(DFMBlockDevice);
+    Q_D(DBlockDevice);
 
     d->dbus->Rescan(options);
 }
 
-void DFMBlockDevice::updateConfigurationItem(const QPair<QString, QVariantMap> &old_item, const QPair<QString, QVariantMap> &new_item, const QVariantMap &options)
+void DBlockDevice::updateConfigurationItem(const QPair<QString, QVariantMap> &old_item, const QPair<QString, QVariantMap> &new_item, const QVariantMap &options)
 {
-    Q_D(DFMBlockDevice);
+    Q_D(DBlockDevice);
 
     d->dbus->UpdateConfigurationItem(old_item, new_item, options);
 }
@@ -565,9 +565,9 @@ void DFMBlockDevice::updateConfigurationItem(const QPair<QString, QVariantMap> &
  *
  * \sa unmount()
  */
-QString DFMBlockDevice::mount(const QVariantMap &options)
+QString DBlockDevice::mount(const QVariantMap &options)
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     QDBusInterface ud2(UDISKS2_SERVICE, d->dbus->path(), UDISKS2_SERVICE ".Filesystem", QDBusConnection::systemBus());
     QDBusReply<QString> reply = ud2.call("Mount", options);
@@ -575,9 +575,9 @@ QString DFMBlockDevice::mount(const QVariantMap &options)
     return reply.value();
 }
 
-void DFMBlockDevice::unmount(const QVariantMap &options)
+void DBlockDevice::unmount(const QVariantMap &options)
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     QDBusInterface ud2(UDISKS2_SERVICE, d->dbus->path(), UDISKS2_SERVICE ".Filesystem", QDBusConnection::systemBus());
     QDBusReply<void> reply = ud2.call("Unmount", options);
@@ -590,7 +590,7 @@ void DFMBlockDevice::unmount(const QVariantMap &options)
  *
  * \return
  */
-bool DFMBlockDevice::canSetLabel() const
+bool DBlockDevice::canSetLabel() const
 {
     if (!hasFileSystem()) {
         return false;
@@ -611,9 +611,9 @@ bool DFMBlockDevice::canSetLabel() const
  *
  * \param options Options (currently unused except for standard options).
  */
-void DFMBlockDevice::setLabel(const QString &label, const QVariantMap &options)
+void DBlockDevice::setLabel(const QString &label, const QVariantMap &options)
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     QDBusInterface ud2(UDISKS2_SERVICE, d->dbus->path(), UDISKS2_SERVICE ".Filesystem", QDBusConnection::systemBus());
     QDBusReply<void> reply = ud2.call("SetLabel", label, options);
@@ -621,9 +621,9 @@ void DFMBlockDevice::setLabel(const QString &label, const QVariantMap &options)
     Q_UNUSED(reply)
 }
 
-void DFMBlockDevice::changePassphrase(const QString &passphrase, const QString &new_passphrase, const QVariantMap &options)
+void DBlockDevice::changePassphrase(const QString &passphrase, const QString &new_passphrase, const QVariantMap &options)
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     QDBusInterface ud2(UDISKS2_SERVICE, d->dbus->path(), UDISKS2_SERVICE ".Encrypted", QDBusConnection::systemBus());
     QDBusReply<void> reply = ud2.call("ChangePassphrase", passphrase, new_passphrase, options);
@@ -631,9 +631,9 @@ void DFMBlockDevice::changePassphrase(const QString &passphrase, const QString &
     Q_UNUSED(reply)
 }
 
-void DFMBlockDevice::lock(const QVariantMap &options)
+void DBlockDevice::lock(const QVariantMap &options)
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     QDBusInterface ud2(UDISKS2_SERVICE, d->dbus->path(), UDISKS2_SERVICE ".Encrypted", QDBusConnection::systemBus());
     QDBusReply<void> reply = ud2.call("Lock", options);
@@ -641,9 +641,9 @@ void DFMBlockDevice::lock(const QVariantMap &options)
     Q_UNUSED(reply)
 }
 
-void DFMBlockDevice::unlock(const QString &passphrase, const QVariantMap &options)
+void DBlockDevice::unlock(const QString &passphrase, const QVariantMap &options)
 {
-    Q_D(const DFMBlockDevice);
+    Q_D(const DBlockDevice);
 
     QDBusInterface ud2(UDISKS2_SERVICE, d->dbus->path(), UDISKS2_SERVICE ".Encrypted", QDBusConnection::systemBus());
     QDBusReply<void> reply = ud2.call("Unlock", passphrase, options);
@@ -651,17 +651,17 @@ void DFMBlockDevice::unlock(const QString &passphrase, const QVariantMap &option
     Q_UNUSED(reply)
 }
 
-DFMBlockDevice::DFMBlockDevice(const QString &path, QObject *parent)
-    : DFMBlockDevice(*new DFMBlockDevicePrivate(this), path, parent)
+DBlockDevice::DBlockDevice(const QString &path, QObject *parent)
+    : DBlockDevice(*new DBlockDevicePrivate(this), path, parent)
 {
 
 }
 
-DFMBlockDevice::DFMBlockDevice(DFMBlockDevicePrivate &dd, const QString &path, QObject *parent)
+DBlockDevice::DBlockDevice(DBlockDevicePrivate &dd, const QString &path, QObject *parent)
     : QObject(parent)
     , d_ptr(&dd)
 {
     dd.dbus = new OrgFreedesktopUDisks2BlockInterface(UDISKS2_SERVICE, path, QDBusConnection::systemBus(), this);
 
-    connect(this, &DFMBlockDevice::idTypeChanged, this, &DFMBlockDevice::fsTypeChanged);
+    connect(this, &DBlockDevice::idTypeChanged, this, &DBlockDevice::fsTypeChanged);
 }

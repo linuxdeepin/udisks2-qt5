@@ -18,16 +18,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef DFMBLOCKPARTITION_H
-#define DFMBLOCKPARTITION_H
+#ifndef DBLOCKPARTITION_H
+#define DBLOCKPARTITION_H
 
-#include <dfmblockdevice.h>
+#include <dblockdevice.h>
 
-class DFMBlockPartitionPrivate;
-class DFMBlockPartition : public DFMBlockDevice
+class DBlockPartitionPrivate;
+class DBlockPartition : public DBlockDevice
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(DFMBlockPartition)
+    Q_DECLARE_PRIVATE(DBlockPartition)
 
     Q_PROPERTY(qulonglong flags READ flags NOTIFY flagsChanged)
     Q_PROPERTY(bool isContained READ isContained NOTIFY isContainedChanged)
@@ -311,9 +311,9 @@ Q_SIGNALS:
     void guidTypeChanged();
 
 private:
-    explicit DFMBlockPartition(const QString &path, QObject *parent = nullptr);
+    explicit DBlockPartition(const QString &path, QObject *parent = nullptr);
 
-    friend class DFMDiskManager;
+    friend class DDiskManager;
 };
 
-#endif // DFMBLOCKPARTITION_H
+#endif // DBLOCKPARTITION_H

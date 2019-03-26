@@ -18,8 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef DFMDISKMANAGER_H
-#define DFMDISKMANAGER_H
+#ifndef DDISKMANAGER_H
+#define DDISKMANAGER_H
 
 #include <QObject>
 #include <QMap>
@@ -30,20 +30,20 @@ class QDBusObjectPath;
 class QStorageInfo;
 QT_END_NAMESPACE
 
-class DFMBlockDevice;
-class DFMBlockPartition;
-class DFMDiskDevice;
-class DFMDiskManagerPrivate;
-class DFMDiskManager : public QObject
+class DBlockDevice;
+class DBlockPartition;
+class DDiskDevice;
+class DDiskManagerPrivate;
+class DDiskManager : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(DFMDiskManager)
+    Q_DECLARE_PRIVATE(DDiskManager)
 
     Q_PROPERTY(bool watchChanges READ watchChanges WRITE setWatchChanges)
 
 public:
-    explicit DFMDiskManager(QObject *parent = nullptr);
-    ~DFMDiskManager();
+    explicit DDiskManager(QObject *parent = nullptr);
+    ~DDiskManager();
 
     QStringList blockDevices() const;
     QStringList diskDevices() const;
@@ -51,14 +51,14 @@ public:
     bool watchChanges() const;
 
     static QString objectPrintable(const QObject *object);
-    static DFMBlockDevice *createBlockDevice(const QString &path, QObject *parent = nullptr);
+    static DBlockDevice *createBlockDevice(const QString &path, QObject *parent = nullptr);
     // device 路径以 '\0' 结尾
-    DFMBlockDevice *createBlockDeviceByDevicePath(const QByteArray &path, QObject *parent = nullptr) const;
-    static DFMBlockPartition *createBlockPartition(const QString &path, QObject *parent = nullptr);
+    DBlockDevice *createBlockDeviceByDevicePath(const QByteArray &path, QObject *parent = nullptr) const;
+    static DBlockPartition *createBlockPartition(const QString &path, QObject *parent = nullptr);
     // 挂载点以 '\0' 结尾
-    DFMBlockPartition *createBlockPartitionByMountPoint(const QByteArray &path, QObject *parent = nullptr) const;
-    DFMBlockPartition *createBlockPartition(const QStorageInfo &info, QObject *parent = nullptr) const;
-    static DFMDiskDevice *createDiskDevice(const QString &path, QObject *parent = nullptr);
+    DBlockPartition *createBlockPartitionByMountPoint(const QByteArray &path, QObject *parent = nullptr) const;
+    DBlockPartition *createBlockPartition(const QStorageInfo &info, QObject *parent = nullptr) const;
+    static DDiskDevice *createDiskDevice(const QString &path, QObject *parent = nullptr);
 
     static QDBusError lastError();
 
@@ -77,7 +77,7 @@ Q_SIGNALS:
     void mountPointsChanged(const QString &blockDevicePath, const QByteArrayList &oldMountPoints, const QByteArrayList &newMountPoints);
 
 private:
-    QScopedPointer<DFMDiskManagerPrivate> d_ptr;
+    QScopedPointer<DDiskManagerPrivate> d_ptr;
 
 private Q_SLOTS:
     void onInterfacesAdded(const QDBusObjectPath &, const QMap<QString, QVariantMap> &);
@@ -85,4 +85,4 @@ private Q_SLOTS:
     void onPropertiesChanged(const QString &interface, const QVariantMap &changed_properties, const QDBusMessage &message);
 };
 
-#endif // DFMDISKMANAGER_H
+#endif // DDISKMANAGER_H

@@ -18,17 +18,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef DFMDISKDEVICE_H
-#define DFMDISKDEVICE_H
+#ifndef DDISKDEVICE_H
+#define DDISKDEVICE_H
 
 #include <QObject>
 #include <QVariantMap>
 
-class DFMDiskDevicePrivate;
-class DFMDiskDevice : public QObject
+class DDiskDevicePrivate;
+class DDiskDevice : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(DFMDiskDevice)
+    Q_DECLARE_PRIVATE(DDiskDevice)
 
     Q_PROPERTY(QString path READ path CONSTANT FINAL)
     Q_PROPERTY(bool canPowerOff READ canPowerOff CONSTANT FINAL)
@@ -62,7 +62,7 @@ class DFMDiskDevice : public QObject
     Q_PROPERTY(QString WWN READ WWN CONSTANT FINAL)
 
 public:
-    ~DFMDiskDevice();
+    ~DDiskDevice();
     QString path() const;
     bool canPowerOff() const;
     QVariantMap configuration() const;
@@ -100,11 +100,11 @@ public Q_SLOTS: // METHODS
     void setConfiguration(const QVariantMap &value, const QVariantMap &options);
 
 private:
-    explicit DFMDiskDevice(const QString &path, QObject *parent = nullptr);
+    explicit DDiskDevice(const QString &path, QObject *parent = nullptr);
 
-    QScopedPointer<DFMDiskDevicePrivate> d_ptr;
+    QScopedPointer<DDiskDevicePrivate> d_ptr;
 
-    friend class DFMDiskManager;
+    friend class DDiskManager;
 };
 
-#endif // DFMDISKDEVICE_H
+#endif // DDISKDEVICE_H
