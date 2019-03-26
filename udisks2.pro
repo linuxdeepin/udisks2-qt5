@@ -6,11 +6,11 @@ TEMPLATE = lib
 isEmpty(VERSION): VERSION = 0.0.1
 
 SOURCES += \
-    $$PWD/dfmdiskdevice.cpp \
-    $$PWD/dfmdiskmanager.cpp \
+    $$PWD/ddiskdevice.cpp \
+    $$PWD/ddiskmanager.cpp \
     $$PWD/udisks2_dbus_common.cpp \
-    $$PWD/dfmblockdevice.cpp \
-    $$PWD/dfmblockpartition.cpp
+    $$PWD/dblockdevice.cpp \
+    $$PWD/dblockpartition.cpp
 
 udisk2.files = $$PWD/org.freedesktop.UDisks2.xml
 udisk2.header_flags = -i $$PWD/udisks2_dbus_common.h -N
@@ -18,11 +18,11 @@ udisk2.header_flags = -i $$PWD/udisks2_dbus_common.h -N
 DBUS_INTERFACES += udisk2 $$PWD/org.freedesktop.UDisks2.ObjectManager.xml
 
 HEADERS += \
-    $$PWD/dfmdiskdevice.h \
+    $$PWD/ddiskdevice.h \
     $$PWD/udisks2_dbus_common.h \
-    $$PWD/dfmdiskmanager.h \
-    $$PWD/dfmblockdevice.h \
-    $$PWD/dfmblockpartition.h
+    $$PWD/ddiskmanager.h \
+    $$PWD/dblockdevice.h \
+    $$PWD/dblockpartition.h
 
 include($$PWD/private/private.pri)
 

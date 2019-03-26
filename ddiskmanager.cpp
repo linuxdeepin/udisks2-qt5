@@ -18,12 +18,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "dfmdiskmanager.h"
+#include "ddiskmanager.h"
 #include "udisks2_dbus_common.h"
 #include "objectmanager_interface.h"
-#include "dfmblockdevice.h"
-#include "dfmblockpartition.h"
-#include "dfmdiskdevice.h"
+#include "dblockdevice.h"
+#include "dblockpartition.h"
+#include "ddiskdevice.h"
 
 #include <QDBusInterface>
 #include <QDBusReply>
@@ -65,10 +65,10 @@ static bool fixUDisks2DiskAddSignal()
     return fix;
 }
 
-class DFMDiskManagerPrivate
+class DDiskManagerPrivate
 {
 public:
-    DFMDiskManagerPrivate(DFMDiskManager *qq);
+    DDiskManagerPrivate(DDiskManager *qq);
 
     void updateBlockDeviceMountPointsMap();
 
@@ -76,16 +76,16 @@ public:
     QMap<QString, QByteArrayList> blockDeviceMountPointsMap;
     QSet<QString> diskDeviceAddSignalFlag;
 
-    DFMDiskManager *q_ptr;
+    DDiskManager *q_ptr;
 };
 
-DFMDiskManagerPrivate::DFMDiskManagerPrivate(DFMDiskManager *qq)
+DDiskManagerPrivate::DDiskManagerPrivate(DDiskManager *qq)
     : q_ptr(qq)
 {
 
 }
 
-void DFMDiskManagerPrivate::updateBlockDeviceMountPointsMap()
+void DDiskManagerPrivate::updateBlockDeviceMountPointsMap()
 {
     blockDeviceMountPointsMap.clear();
 
@@ -113,13 +113,13 @@ void DFMDiskManagerPrivate::updateBlockDeviceMountPointsMap()
     }
 }
 
-void DFMDiskManager::onInterfacesAdded(const QDBusObjectPath &object_path, const QMap<QString, QVariantMap> &interfaces_and_properties)
+void DDiskManager::onInterfacesAdded(const QDBusObjectPath &object_path, const QMap<QString, QVariantMap> &interfaces_and_properties)
 {
     const QString &path = object_path.path();
     const QString &path_drive = QStringLiteral("/org/freedesktop/UDisks2/drives/");
     const QString &path_device = QStringLiteral("/org/freedesktop/UDisks2/block_devices/");
 
-    Q_D(DFMDiskManager);
+    Q_D(DDiskManager);
 
     if (path.startsWith(path_drive)) {
         if (interfaces_and_properties.contains(QStringLiteral(UDISKS2_SERVICE ".Drive"))) {
@@ -140,7 +140,7 @@ void DFMDiskManager::onInterfacesAdded(const QDBusObjectPath &object_path, const
     } else if (path.startsWith(path_device)) {
         if (interfaces_and_properties.contains(QStringLiteral(UDISKS2_SERVICE ".Block"))) {
             if (fixUDisks2DiskAddSignal()) {
-                QScopedPointer<DFMBlockDevice> bd(createBlockDevice(path));
+                QScopedPointer<DBlockDevice> bd(createBlockDevice(path));
                 const QString &drive = bd->drive();
 
                 if (!d->diskDeviceAddSignalFlag.contains(drive)) {
@@ -158,7 +158,7 @@ void DFMDiskManager::onInterfacesAdded(const QDBusObjectPath &object_path, const
         }
 
         if (interfaces_and_properties.contains(QStringLiteral(UDISKS2_SERVICE ".Filesystem"))) {
-            Q_D(DFMDiskManager);
+            Q_D(DDiskManager);
 
             d->blockDeviceMountPointsMap.remove(object_path.path());
 
@@ -167,11 +167,11 @@ void DFMDiskManager::onInterfacesAdded(const QDBusObjectPath &object_path, const
     }
 }
 
-void DFMDiskManager::onInterfacesRemoved(const QDBusObjectPath &object_path, const QStringList &interfaces)
+void DDiskManager::onInterfacesRemoved(const QDBusObjectPath &object_path, const QStringList &interfaces)
 {
     const QString &path = object_path.path();
 
-    Q_D(DFMDiskManager);
+    Q_D(DDiskManager);
 
     for (const QString &i : interfaces) {
         if (i == QStringLiteral(UDISKS2_SERVICE ".Drive")) {
@@ -188,9 +188,9 @@ void DFMDiskManager::onInterfacesRemoved(const QDBusObjectPath &object_path, con
     }
 }
 
-void DFMDiskManager::onPropertiesChanged(const QString &interface, const QVariantMap &changed_properties, const QDBusMessage &message)
+void DDiskManager::onPropertiesChanged(const QString &interface, const QVariantMap &changed_properties, const QDBusMessage &message)
 {
-    Q_D(DFMDiskManager);
+    Q_D(DDiskManager);
 
     if (interface != UDISKS2_SERVICE ".Filesystem") {
         return;
@@ -218,22 +218,22 @@ void DFMDiskManager::onPropertiesChanged(const QString &interface, const QVarian
 }
 
 /*!
- * \class DFMDiskManager
+ * \class DDiskManager
  * \inmodule dde-file-manager-lib
  *
- * \brief DFMDiskManager provide severial ways to manage devices and partitions.
+ * \brief DDiskManager provide severial ways to manage devices and partitions.
  *
- * \sa DFMBlockPartition, DFMBlockDevice, UDiskDeviceInfo
+ * \sa DBlockPartition, DBlockDevice, UDiskDeviceInfo
  */
 
-DFMDiskManager::DFMDiskManager(QObject *parent)
+DDiskManager::DDiskManager(QObject *parent)
     : QObject(parent)
-    , d_ptr(new DFMDiskManagerPrivate(this))
+    , d_ptr(new DDiskManagerPrivate(this))
 {
 
 }
 
-DFMDiskManager::~DFMDiskManager()
+DDiskManager::~DDiskManager()
 {
 
 }
@@ -261,24 +261,24 @@ static QStringList getDBusNodeNameList(const QString &service, const QString &pa
     return nodeList;
 }
 
-QStringList DFMDiskManager::blockDevices() const
+QStringList DDiskManager::blockDevices() const
 {
     return getDBusNodeNameList(UDISKS2_SERVICE, "/org/freedesktop/UDisks2/block_devices", QDBusConnection::systemBus());
 }
 
-QStringList DFMDiskManager::diskDevices() const
+QStringList DDiskManager::diskDevices() const
 {
     return getDBusNodeNameList(UDISKS2_SERVICE, "/org/freedesktop/UDisks2/drives", QDBusConnection::systemBus());
 }
 
-bool DFMDiskManager::watchChanges() const
+bool DDiskManager::watchChanges() const
 {
-    Q_D(const DFMDiskManager);
+    Q_D(const DDiskManager);
 
     return d->watchChanges;
 }
 
-QString DFMDiskManager::objectPrintable(const QObject *object)
+QString DDiskManager::objectPrintable(const QObject *object)
 {
     QString string;
     QDebug debug(&string);
@@ -301,15 +301,15 @@ QString DFMDiskManager::objectPrintable(const QObject *object)
     return string;
 }
 
-DFMBlockDevice *DFMDiskManager::createBlockDevice(const QString &path, QObject *parent)
+DBlockDevice *DDiskManager::createBlockDevice(const QString &path, QObject *parent)
 {
-    return new DFMBlockDevice(path, parent);
+    return new DBlockDevice(path, parent);
 }
 
-DFMBlockDevice *DFMDiskManager::createBlockDeviceByDevicePath(const QByteArray &path, QObject *parent) const
+DBlockDevice *DDiskManager::createBlockDeviceByDevicePath(const QByteArray &path, QObject *parent) const
 {
     for (const QString &block : blockDevices()) {
-        DFMBlockDevice *device = new DFMBlockDevice(block, parent);
+        DBlockDevice *device = new DBlockDevice(block, parent);
 
         if (device->device() == path) {
             return device;
@@ -321,15 +321,15 @@ DFMBlockDevice *DFMDiskManager::createBlockDeviceByDevicePath(const QByteArray &
     return nullptr;
 }
 
-DFMBlockPartition *DFMDiskManager::createBlockPartition(const QString &path, QObject *parent)
+DBlockPartition *DDiskManager::createBlockPartition(const QString &path, QObject *parent)
 {
-    return new DFMBlockPartition(path, parent);
+    return new DBlockPartition(path, parent);
 }
 
-DFMBlockPartition *DFMDiskManager::createBlockPartitionByMountPoint(const QByteArray &path, QObject *parent) const
+DBlockPartition *DDiskManager::createBlockPartitionByMountPoint(const QByteArray &path, QObject *parent) const
 {
     for (const QString &block : blockDevices()) {
-        DFMBlockPartition *device = new DFMBlockPartition(block, parent);
+        DBlockPartition *device = new DBlockPartition(block, parent);
 
         if (device->mountPoints().contains(path)) {
             return device;
@@ -341,24 +341,24 @@ DFMBlockPartition *DFMDiskManager::createBlockPartitionByMountPoint(const QByteA
     return nullptr;
 }
 
-DFMBlockPartition *DFMDiskManager::createBlockPartition(const QStorageInfo &info, QObject *parent) const
+DBlockPartition *DDiskManager::createBlockPartition(const QStorageInfo &info, QObject *parent) const
 {
     return createBlockPartitionByMountPoint(info.rootPath().toLocal8Bit() + '\0', parent);
 }
 
-DFMDiskDevice *DFMDiskManager::createDiskDevice(const QString &path, QObject *parent)
+DDiskDevice *DDiskManager::createDiskDevice(const QString &path, QObject *parent)
 {
-    return new DFMDiskDevice(path, parent);
+    return new DDiskDevice(path, parent);
 }
 
-QDBusError DFMDiskManager::lastError()
+QDBusError DDiskManager::lastError()
 {
     return QDBusConnection::systemBus().lastError();
 }
 
-void DFMDiskManager::setWatchChanges(bool watchChanges)
+void DDiskManager::setWatchChanges(bool watchChanges)
 {
-    Q_D(DFMDiskManager);
+    Q_D(DDiskManager);
 
     if (d->watchChanges == watchChanges)
         return;
@@ -368,9 +368,9 @@ void DFMDiskManager::setWatchChanges(bool watchChanges)
 
     if (watchChanges) {
         connect(object_manager, &OrgFreedesktopDBusObjectManagerInterface::InterfacesAdded,
-                this, &DFMDiskManager::onInterfacesAdded);
+                this, &DDiskManager::onInterfacesAdded);
         connect(object_manager, &OrgFreedesktopDBusObjectManagerInterface::InterfacesRemoved,
-                this, &DFMDiskManager::onInterfacesRemoved);
+                this, &DDiskManager::onInterfacesRemoved);
 
         d->updateBlockDeviceMountPointsMap();
 
@@ -378,9 +378,9 @@ void DFMDiskManager::setWatchChanges(bool watchChanges)
                    this, SLOT(onPropertiesChanged(const QString &, const QVariantMap &, const QDBusMessage&)));
     } else {
         disconnect(object_manager, &OrgFreedesktopDBusObjectManagerInterface::InterfacesAdded,
-                   this, &DFMDiskManager::onInterfacesAdded);
+                   this, &DDiskManager::onInterfacesAdded);
         disconnect(object_manager, &OrgFreedesktopDBusObjectManagerInterface::InterfacesRemoved,
-                   this, &DFMDiskManager::onInterfacesRemoved);
+                   this, &DDiskManager::onInterfacesRemoved);
 
         d->blockDeviceMountPointsMap.clear();
 

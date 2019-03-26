@@ -18,8 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef DFMBLOCKDEVICE_H
-#define DFMBLOCKDEVICE_H
+#ifndef DBLOCKDEVICE_H
+#define DBLOCKDEVICE_H
 
 #include <QObject>
 #include <QVariantMap>
@@ -27,11 +27,11 @@
 
 class QDBusObjectPath;
 
-class DFMBlockDevicePrivate;
-class DFMBlockDevice : public QObject
+class DBlockDevicePrivate;
+class DBlockDevice : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(DFMBlockDevice)
+    Q_DECLARE_PRIVATE(DBlockDevice)
 
     Q_PROPERTY(QString path READ path CONSTANT FINAL)
     Q_PROPERTY(bool watchChanges READ watchChanges WRITE setWatchChanges)
@@ -110,7 +110,7 @@ public:
 
     Q_ENUM(FSType)
 
-    ~DFMBlockDevice();
+    ~DBlockDevice();
 
     bool isValid() const;
     bool watchChanges() const;
@@ -213,10 +213,10 @@ Q_SIGNALS:
     void childConfigurationChanged(QList<QPair<QString, QVariantMap>> childConfiguration);
 
 protected:
-    explicit DFMBlockDevice(const QString &path, QObject *parent = nullptr);
-    explicit DFMBlockDevice(DFMBlockDevicePrivate &dd, const QString &path, QObject *parent = nullptr);
+    explicit DBlockDevice(const QString &path, QObject *parent = nullptr);
+    explicit DBlockDevice(DBlockDevicePrivate &dd, const QString &path, QObject *parent = nullptr);
 
-    QScopedPointer<DFMBlockDevicePrivate> d_ptr;
+    QScopedPointer<DBlockDevicePrivate> d_ptr;
 
 private Q_SLOTS:
     void onInterfacesAdded(const QDBusObjectPath &object_path, const QMap<QString, QVariantMap> &interfaces_and_properties);
@@ -224,7 +224,7 @@ private Q_SLOTS:
     void onPropertiesChanged(const QString &interface, const QVariantMap &changed_properties);
 //    Q_PRIVATE_SLOT(d_ptr, void _q_onPropertiesChanged(const QString &, const QVariantMap &))
 
-    friend class DFMDiskManager;
+    friend class DDiskManager;
 };
 
-#endif // DFMBLOCKDEVICE_H
+#endif // DBLOCKDEVICE_H

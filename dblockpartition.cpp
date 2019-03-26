@@ -18,88 +18,88 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "dfmblockpartition.h"
-#include "private/dfmblockdevice_p.h"
+#include "dblockpartition.h"
+#include "private/dblockdevice_p.h"
 #include "udisks2_interface.h"
 
-class DFMBlockPartitionPrivate : public DFMBlockDevicePrivate
+class DBlockPartitionPrivate : public DBlockDevicePrivate
 {
 public:
-    DFMBlockPartitionPrivate(DFMBlockPartition *qq);
+    DBlockPartitionPrivate(DBlockPartition *qq);
 
     OrgFreedesktopUDisks2PartitionInterface *dbus;
 };
 
-DFMBlockPartitionPrivate::DFMBlockPartitionPrivate(DFMBlockPartition *qq)
-    : DFMBlockDevicePrivate(qq)
+DBlockPartitionPrivate::DBlockPartitionPrivate(DBlockPartition *qq)
+    : DBlockDevicePrivate(qq)
 {
 
 }
 
-qulonglong DFMBlockPartition::flags() const
+qulonglong DBlockPartition::flags() const
 {
-    Q_D(const DFMBlockPartition);
+    Q_D(const DBlockPartition);
 
     return d->dbus->flags();
 }
 
-bool DFMBlockPartition::isContained() const
+bool DBlockPartition::isContained() const
 {
-    Q_D(const DFMBlockPartition);
+    Q_D(const DBlockPartition);
 
     return d->dbus->isContained();
 }
 
-bool DFMBlockPartition::isContainer() const
+bool DBlockPartition::isContainer() const
 {
-    Q_D(const DFMBlockPartition);
+    Q_D(const DBlockPartition);
 
     return d->dbus->isContainer();
 }
 
-QString DFMBlockPartition::name() const
+QString DBlockPartition::name() const
 {
-    Q_D(const DFMBlockPartition);
+    Q_D(const DBlockPartition);
 
     return d->dbus->name();
 }
 
-uint DFMBlockPartition::number() const
+uint DBlockPartition::number() const
 {
-    Q_D(const DFMBlockPartition);
+    Q_D(const DBlockPartition);
 
     return d->dbus->number();
 }
 
-qulonglong DFMBlockPartition::offset() const
+qulonglong DBlockPartition::offset() const
 {
-    Q_D(const DFMBlockPartition);
+    Q_D(const DBlockPartition);
 
     return d->dbus->offset();
 }
 
-qulonglong DFMBlockPartition::size() const
+qulonglong DBlockPartition::size() const
 {
-    Q_D(const DFMBlockPartition);
+    Q_D(const DBlockPartition);
 
     return d->dbus->size();
 }
 
-QString DFMBlockPartition::table() const
+QString DBlockPartition::table() const
 {
-    Q_D(const DFMBlockPartition);
+    Q_D(const DBlockPartition);
 
     return d->dbus->table().path();
 }
 
-QString DFMBlockPartition::type() const
+QString DBlockPartition::type() const
 {
-    Q_D(const DFMBlockPartition);
+    Q_D(const DBlockPartition);
 
     return d->dbus->type();
 }
 
-DFMBlockPartition::Type DFMBlockPartition::eType() const
+DBlockPartition::Type DBlockPartition::eType() const
 {
     const QString &type = this->type();
 
@@ -116,14 +116,14 @@ DFMBlockPartition::Type DFMBlockPartition::eType() const
     return static_cast<Type>(value);
 }
 
-QString DFMBlockPartition::UUID() const
+QString DBlockPartition::UUID() const
 {
-    Q_D(const DFMBlockPartition);
+    Q_D(const DBlockPartition);
 
     return d->dbus->uUID();
 }
 
-DFMBlockPartition::GUIDType DFMBlockPartition::guidType() const
+DBlockPartition::GUIDType DBlockPartition::guidType() const
 {
     static QByteArrayList list;
 
@@ -272,7 +272,7 @@ DFMBlockPartition::GUIDType DFMBlockPartition::guidType() const
     return static_cast<GUIDType>((index + GUIDTypeBegin));
 }
 
-QString DFMBlockPartition::typeDescription(DFMBlockPartition::Type type)
+QString DBlockPartition::typeDescription(DBlockPartition::Type type)
 {
     switch (type) {
     case Empty:
@@ -460,7 +460,7 @@ QString DFMBlockPartition::typeDescription(DFMBlockPartition::Type type)
     return QString();
 }
 
-QString DFMBlockPartition::guidTypeDescription(GUIDType type)
+QString DBlockPartition::guidTypeDescription(GUIDType type)
 {
     switch ((int)type) {
     case Unused_None:
@@ -694,42 +694,42 @@ QString DFMBlockPartition::guidTypeDescription(GUIDType type)
     return "Invalid GUID type";
 }
 
-void DFMBlockPartition::deletePartition(const QVariantMap &options)
+void DBlockPartition::deletePartition(const QVariantMap &options)
 {
-    Q_D(DFMBlockPartition);
+    Q_D(DBlockPartition);
 
     d->dbus->Delete(options);
 }
 
-void DFMBlockPartition::resize(qulonglong size, const QVariantMap &options)
+void DBlockPartition::resize(qulonglong size, const QVariantMap &options)
 {
-    Q_D(DFMBlockPartition);
+    Q_D(DBlockPartition);
 
     d->dbus->Resize(size, options);
 }
 
-void DFMBlockPartition::setFlags(qulonglong flags, const QVariantMap &options)
+void DBlockPartition::setFlags(qulonglong flags, const QVariantMap &options)
 {
-    Q_D(DFMBlockPartition);
+    Q_D(DBlockPartition);
 
     d->dbus->SetFlags(flags, options);
 }
 
-void DFMBlockPartition::setName(const QString &name, const QVariantMap &options)
+void DBlockPartition::setName(const QString &name, const QVariantMap &options)
 {
-    Q_D(DFMBlockPartition);
+    Q_D(DBlockPartition);
 
     d->dbus->SetName(name, options);
 }
 
-void DFMBlockPartition::setType(const QString &type, const QVariantMap &options)
+void DBlockPartition::setType(const QString &type, const QVariantMap &options)
 {
-    Q_D(DFMBlockPartition);
+    Q_D(DBlockPartition);
 
     d->dbus->SetType(type, options);
 }
 
-void DFMBlockPartition::setType(DFMBlockPartition::Type type, const QVariantMap &options)
+void DBlockPartition::setType(DBlockPartition::Type type, const QVariantMap &options)
 {
     if (type == Unknow)
         return;
@@ -741,19 +741,19 @@ void DFMBlockPartition::setType(DFMBlockPartition::Type type, const QVariantMap 
 }
 
 /*!
- * \class DFMBlockPartition
+ * \class DBlockPartition
  * \inmodule dde-file-manager-lib
  *
- * \brief DFMBlockPartition class comment goes here
+ * \brief DBlockPartition class comment goes here
  *
- * \sa DFMDiskManager::createBlockPartition
+ * \sa DDiskManager::createBlockPartition
  */
 
-DFMBlockPartition::DFMBlockPartition(const QString &path, QObject *parent)
-    : DFMBlockDevice(*new DFMBlockPartitionPrivate(this), path, parent)
+DBlockPartition::DBlockPartition(const QString &path, QObject *parent)
+    : DBlockDevice(*new DBlockPartitionPrivate(this), path, parent)
 {
     d_func()->dbus = new OrgFreedesktopUDisks2PartitionInterface(UDISKS2_SERVICE, path, QDBusConnection::systemBus(), this);
 
-    connect(this, &DFMBlockPartition::typeChanged, this, &DFMBlockPartition::eTypeChanged);
-    connect(this, &DFMBlockPartition::UUIDChanged, this, &DFMBlockPartition::guidTypeChanged);
+    connect(this, &DBlockPartition::typeChanged, this, &DBlockPartition::eTypeChanged);
+    connect(this, &DBlockPartition::UUIDChanged, this, &DBlockPartition::guidTypeChanged);
 }

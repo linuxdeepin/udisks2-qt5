@@ -18,10 +18,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef DFMBLOCKDEVICE_P_H
-#define DFMBLOCKDEVICE_P_H
+#ifndef DBLOCKDEVICE_P_H
+#define DBLOCKDEVICE_P_H
 
-#include "dfmblockdevice.h"
+#include "dblockdevice.h"
 
 QT_BEGIN_NAMESPACE
 class QDBusObjectPath;
@@ -29,20 +29,20 @@ QT_END_NAMESPACE
 
 class OrgFreedesktopUDisks2BlockInterface;
 
-class DFMBlockDevicePrivate
+class DBlockDevicePrivate
 {
 public:
-    explicit DFMBlockDevicePrivate(DFMBlockDevice *qq);
+    explicit DBlockDevicePrivate(DBlockDevice *qq);
 
     OrgFreedesktopUDisks2BlockInterface *dbus;
     bool watchChanges = false;
-    DFMBlockDevice *q_ptr;
+    DBlockDevice *q_ptr;
 
     void _q_onInterfacesAdded(const QDBusObjectPath &object_path, const QMap<QString, QVariantMap> &interfaces_and_properties);
     void _q_onInterfacesRemoved(const QDBusObjectPath &object_path, const QStringList &interfaces);
     void _q_onPropertiesChanged(const QString &interface, const QVariantMap &changed_properties);
 
-    Q_DECLARE_PUBLIC(DFMBlockDevice)
+    Q_DECLARE_PUBLIC(DBlockDevice)
 };
 
-#endif // DFMBLOCKDEVICE_P_H
+#endif // DBLOCKDEVICE_P_H
