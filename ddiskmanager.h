@@ -75,6 +75,7 @@ Q_SIGNALS:
     void mountAdded(const QString &blockDevicePath, const QByteArray &mountPoint);
     void mountRemoved(const QString &blockDevicePath, const QByteArray &mountPoint);
     void mountPointsChanged(const QString &blockDevicePath, const QByteArrayList &oldMountPoints, const QByteArrayList &newMountPoints);
+    void opticalChanged(const QString &path);
 
 private:
     QScopedPointer<DDiskManagerPrivate> d_ptr;

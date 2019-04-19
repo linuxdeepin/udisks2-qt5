@@ -192,6 +192,12 @@ void DDiskManager::onPropertiesChanged(const QString &interface, const QVariantM
 {
     Q_D(DDiskManager);
 
+    const QString &path = message.path();
+
+    if (changed_properties.contains("Optical")) {
+        Q_EMIT opticalChanged(path);
+    }
+
     if (interface != UDISKS2_SERVICE ".Filesystem") {
         return;
     }
@@ -200,7 +206,6 @@ void DDiskManager::onPropertiesChanged(const QString &interface, const QVariantM
         return;
     }
 
-    const QString &path = message.path();
     const QByteArrayList old_mount_points = d->blockDeviceMountPointsMap.value(path);
     const QByteArrayList &new_mount_points = qdbus_cast<QByteArrayList>(changed_properties.value("MountPoints"));
 
