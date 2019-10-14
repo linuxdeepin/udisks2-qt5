@@ -39,6 +39,10 @@
     <!-- SupportedFilesystems: List of supported filesystem by UDisks2 -->
     <property name="SupportedFilesystems" type="as" access="read"/>
 
+    <!-- SupportedEncryptionTypes: List of supported encryption types by UDisks2 -->
+    <property name="SupportedEncryptionTypes" type="as" access="read"/>
+    <property name="DefaultEncryptionType" type="s" access="read"/>
+
     <!--
         CanFormat:
         @type: The filesystem type to be tested for formatting availability.
@@ -1384,7 +1388,7 @@
     <!--
         Format:
         @type: The type of file system, partition table or other content to format the device with.
-        @options: Options - known options (in addition to <link linkend="udisks-std-options">standard options</link>) includes <parameter>label</parameter> (of type 's'), <parameter>take-ownership</parameter> (of type 'b'), <parameter>encrypt.passphrase</parameter> (of type 's' or 'ay'), <parameter>erase</parameter> (of type 's'), <parameter>no-block</parameter> (of type 'b') and <parameter>update-partition-type</parameter> (of type 'b').
+        @options: Options - known options (in addition to <link linkend="udisks-std-options">standard options</link>) includes <parameter>label</parameter> (of type 's'), <parameter>take-ownership</parameter> (of type 'b'), <parameter>encrypt.passphrase</parameter> (of type 's' or 'ay'), <parameter>encrypt.type</parameter> (of type 's'), <parameter>erase</parameter> (of type 's'), <parameter>no-block</parameter> (of type 'b') and <parameter>update-partition-type</parameter> (of type 'b').
 
         Formats the device with a file system, partition table or
         other well-known content.
@@ -1415,6 +1419,9 @@
         unlocked device will be left open. This parameter can be used
         to supply the binary contents of an arbitrary keyfile by passing
         a value of type <quote>ay</quote>.
+        Option <parameter>encrypt.type</parameter> can be used to
+        specify encryption "technology" that will be used. Currently
+        only <quote>luks1</quote> and <quote>luks2</quote> are supported.
 
         If the option <parameter>erase</parameter> is used then the
         underlying device will be erased. Valid values include
@@ -1937,6 +1944,10 @@
         typically results in the user having to authenticate as an
         administrator). If authorized, the filesystem is unmounted.
 
+        If the mountpoint was previously created by udisks it is
+        guaranteed it will be removed upon returning from this method
+        call.
+
         If the filesystem is busy, this operation fails with the error
         <link linkend="UDISKS-ERROR-DEVICE-BUSY:CAPS"><constant>org.freedesktop.UDisks2.Error.DeviceBusy</constant></link>
         unless the @force option is used.
@@ -2092,6 +2103,25 @@
         <annotation name="org.qtproject.QtDBus.QtTypeName" value="QList&lt;QPair&lt;QString, QVariantMap&gt;&gt;"/>
     </property>
 
+    <!-- HintEncryptionType:
+         If not blank, the type of the encryption used to encrypt this device.
+
+         This is set during successful unlocking of an encrypted device.
+         It is required for encryption types which can only be determined
+         by decrypting the device (for example TCRYPT), but is used for all
+         encryption types for consistency reasons.
+    -->
+    <property name="HintEncryptionType" type="s" access="read"/>
+
+    <!-- MetadataSize: Size of the metadata on the encrypted device in bytes
+    -->
+    <property name="MetadataSize" type="t" access="read"/>
+
+    <!-- CleartextDevice:
+         For an unlocked device, the object path of its cleartext device.
+    -->
+    <property name="CleartextDevice" type="o" access="read"/>
+
     <!--
         Unlock:
         @passphrase: The passphrase to use.
@@ -2154,6 +2184,24 @@
       <arg name="new_passphrase" direction="in" type="s"/>
       <arg name="options" direction="in" type="a{sv}"/>
       <annotation name="org.qtproject.QtDBus.QtTypeName.In2" value="QVariantMap"/>
+    </method>
+
+    <!--
+        Resize:
+        @size: The target cleartext size in bytes, 0 for maximum.
+        @options: Options - known options (in addition to <link linkend="udisks-std-options">standard options</link>) includes <parameter>passphrase</parameter> (of type 's') and <parameter>keyfile_contents</parameter> (of type 'ay') which is preferred over @passphrase if specified.
+        @since: 2.8.0
+
+        Resizes the encrypted device.  The device must be unlocked.
+        The given size is the target size for the cleartext device.
+
+        You need to specify either @passphrase or @keyfile_contents for LUKS 2
+        devices that don't have verified key loaded in kernel keyring.
+    -->
+    <method name="Resize">
+      <arg name="size" direction="in" type="t"/>
+      <arg name="options" direction="in" type="a{sv}"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="QVariantMap"/>
     </method>
 
   </interface>
@@ -2274,7 +2322,7 @@
 
          This property corresponds to the
          <literal>sync_action</literal> sysfs file, see the
-         <filename><ulink url="http://www.kernel.org/doc/Documentation/md.txt">Documentation/md.txt</ulink></filename>
+         <filename><ulink url="https://www.kernel.org/doc/Documentation/admin-guide/md.rst">Documentation/admin-guide/md.rst</ulink></filename>
          file shipped with the kernel sources.
     -->
     <property name="SyncAction" type="s" access="read"/>
@@ -2284,7 +2332,7 @@
 
          This property corresponds to the
          <literal>sync_completed</literal> sysfs file, see the
-         <filename><ulink url="http://www.kernel.org/doc/Documentation/md.txt">Documentation/md.txt</ulink></filename>
+         <filename><ulink url="https://www.kernel.org/doc/Documentation/admin-guide/md.rst">Documentation/admin-guide/md.rst</ulink></filename>
          file shipped with the kernel sources.
     -->
     <property name="SyncCompleted" type="d" access="read"/>
@@ -2299,7 +2347,7 @@
 
          This property corresponds to the
          <literal>sync_speed</literal> sysfs file, see the
-         <filename><ulink url="http://www.kernel.org/doc/Documentation/md.txt">Documentation/md.txt</ulink></filename>
+         <filename><ulink url="https://www.kernel.org/doc/Documentation/admin-guide/md.rst">Documentation/admin-guide/md.rst</ulink></filename>
          file shipped with the kernel sources.
     -->
     <property name="SyncRate" type="t" access="read"/>
@@ -2313,7 +2361,7 @@
 
          This property is based on the value of the
          <literal>sync_speed</literal> sysfs file, see the
-         <filename><ulink url="http://www.kernel.org/doc/Documentation/md.txt">Documentation/md.txt</ulink></filename>
+         <filename><ulink url="https://www.kernel.org/doc/Documentation/admin-guide/md.rst">Documentation/admin-guide/md.rst</ulink></filename>
          file shipped with the kernel sources.
     -->
     <property name="SyncRemainingTime" type="t" access="read"/>
@@ -2323,7 +2371,7 @@
 
          This property corresponds to the
          <literal>degraded</literal> sysfs file, see the
-         <filename><ulink url="http://www.kernel.org/doc/Documentation/md.txt">Documentation/md.txt</ulink></filename>
+         <filename><ulink url="https://www.kernel.org/doc/Documentation/admin-guide/md.rst">Documentation/admin-guide/md.rst</ulink></filename>
          file shipped with the kernel sources.
     -->
     <property name="Degraded" type="u" access="read"/>
@@ -2336,7 +2384,7 @@
 
          This property corresponds to the
          <literal>bitmap/location</literal> sysfs file, see the
-         <filename><ulink url="http://www.kernel.org/doc/Documentation/md.txt">Documentation/md.txt</ulink></filename>
+         <filename><ulink url="https://www.kernel.org/doc/Documentation/admin-guide/md.rst">Documentation/admin-guide/md.rst</ulink></filename>
          file shipped with the kernel sources.
     -->
     <property name="BitmapLocation" type="ay" access="read"/>
@@ -2346,7 +2394,7 @@
 
          This property corresponds to the
          <literal>chunk_size</literal> sysfs file, see the
-         <filename><ulink url="http://www.kernel.org/doc/Documentation/md.txt">Documentation/md.txt</ulink></filename>
+         <filename><ulink url="https://www.kernel.org/doc/Documentation/admin-guide/md.rst">Documentation/admin-guide/md.rst</ulink></filename>
          file shipped with the kernel sources.
     -->
     <property name="ChunkSize" type="t" access="read"/>
@@ -2372,7 +2420,7 @@
          This property correspond to the
          <filename>/sys/block/mdN/md/dev-*</filename> directories in sysfs and the sysfs files in each directory.
          See the
-         <filename><ulink url="http://www.kernel.org/doc/Documentation/md.txt">Documentation/md.txt</ulink></filename>
+         <filename><ulink url="https://www.kernel.org/doc/Documentation/admin-guide/md.rst">Documentation/admin-guide/md.rst</ulink></filename>
          file shipped with the kernel sources.
     -->
     <property name="ActiveDevices" type="a(oiasta{sv})" access="read">
@@ -2484,7 +2532,7 @@
 
         This method call is similar to writing to the
         <literal>sync_action</literal> sysfs file, see the
-        <filename><ulink url="http://www.kernel.org/doc/Documentation/md.txt">Documentation/md.txt</ulink></filename>
+        <filename><ulink url="https://www.kernel.org/doc/Documentation/admin-guide/md.rst">Documentation/admin-guide/md.rst</ulink></filename>
         file shipped with the kernel sources.
     -->
     <method name="RequestSyncAction">
@@ -2493,6 +2541,20 @@
       <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="QVariantMap"/>
     </method>
 
+    <!-- Delete:
+         @options: Options.
+
+         Stops the RAID array and destroys all RAID metadata on member devices.
+
+         If the option <parameter>tear-down</parameter> is set to
+         %TRUE, then the RAID array block device and all its children
+         will be cleaned up before stopping.  This cleanup consists of
+         removing entries from /etc/fstab and /etc/crypttab, and
+         locking of encrypted block devices.  Entries in /etc/fstab
+         and /etc/crypttab that have been created with the
+         'track-parents' options to AddConfigurationItem will be
+         removed even if their block device is currently unavailable.
+    -->
     <method name="Delete">
       <arg name="options" direction="in" type="a{sv}"/>
       <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="QVariantMap"/>
@@ -2542,7 +2604,8 @@
       the D-Bus method used to initiate the operation to return,
       usually returning the
       <literal>org.freedesktop.UDisks2.Error.Cancelled</literal>
-      error.
+      error. Once cancellation is requested it may take some time before
+      the job is actually completed as there might be ongoing I/O.
   -->
   <interface name="org.freedesktop.UDisks2.Job">
 
@@ -2561,6 +2624,8 @@
              <listitem><para>Locking encrypted device.</para></listitem></varlistentry>
            <varlistentry><term>encrypted-modify</term>
              <listitem><para>Modifying encrypted device.</para></listitem></varlistentry>
+           <varlistentry><term>encrypted-resize</term>
+             <listitem><para>Resizing encrypted device.</para></listitem></varlistentry>
            <varlistentry><term>swapspace-start</term>
              <listitem><para>Starting swapspace.</para></listitem></varlistentry>
            <varlistentry><term>swapspace-stop</term>

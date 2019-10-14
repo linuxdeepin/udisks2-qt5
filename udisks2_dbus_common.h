@@ -63,7 +63,7 @@ struct ActiveDeviceInfo
 // Many method calls take a parameter of type 'a{sv}' that is normally called options. The following table lists well-known options:
 // "auth.no_user_interaction" 	bool 	// If set to TRUE, then no user interaction will happen when checking if the method call is authorized.
 
-bool interfaceIsExistes(const QString &path, const QString &interface);
+bool interfaceExists(const QString &path, const QString &interface);
 OrgFreedesktopDBusObjectManagerInterface *objectManager();
 QStringList supportedFilesystems();
 QString version();

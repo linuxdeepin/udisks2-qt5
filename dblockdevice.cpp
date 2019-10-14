@@ -374,22 +374,22 @@ bool DBlockDevice::isLoopDevice() const
 {
     Q_D(const DBlockDevice);
 
-    return UDisks2::interfaceIsExistes(d->dbus->path(), UDISKS2_SERVICE ".Loop");
+    return UDisks2::interfaceExists(d->dbus->path(), UDISKS2_SERVICE ".Loop");
 }
 
 bool DBlockDevice::hasFileSystem(const QString &path)
 {
-    return UDisks2::interfaceIsExistes(path, UDISKS2_SERVICE ".Filesystem");
+    return UDisks2::interfaceExists(path, UDISKS2_SERVICE ".Filesystem");
 }
 
 bool DBlockDevice::hasPartition(const QString &path)
 {
-    return UDisks2::interfaceIsExistes(path, UDISKS2_SERVICE ".Partition");
+    return UDisks2::interfaceExists(path, UDISKS2_SERVICE ".Partition");
 }
 
 bool DBlockDevice::isEncrypted(const QString &path)
 {
-    return UDisks2::interfaceIsExistes(path, UDISKS2_SERVICE ".Encrypted");
+    return UDisks2::interfaceExists(path, UDISKS2_SERVICE ".Encrypted");
 }
 
 QByteArrayList DBlockDevice::mountPoints() const
@@ -399,24 +399,21 @@ QByteArrayList DBlockDevice::mountPoints() const
 
     Q_D(const DBlockDevice);
 
-    QDBusInterface ud2(UDISKS2_SERVICE, d->dbus->path(), "org.freedesktop.DBus.Properties", QDBusConnection::systemBus());
-    QDBusReply<QVariant> reply = ud2.call("Get", UDISKS2_SERVICE ".Filesystem", "MountPoints");
-
-    return qdbus_cast<QByteArrayList>(reply.value());
+    OrgFreedesktopUDisks2FilesystemInterface fsif(UDISKS2_SERVICE, d->dbus->path(), QDBusConnection::systemBus());
+    return fsif.mountPoints();
 }
 
 DBlockDevice::PTType DBlockDevice::ptType() const
 {
     Q_D(const DBlockDevice);
 
-    if (!UDisks2::interfaceIsExistes(d->dbus->path(), UDISKS2_SERVICE ".PartitionTable")) {
+    if (!UDisks2::interfaceExists(d->dbus->path(), UDISKS2_SERVICE ".PartitionTable")) {
         return InvalidPT;
     }
 
-    QDBusInterface ud2(UDISKS2_SERVICE, d->dbus->path(), "org.freedesktop.DBus.Properties", QDBusConnection::systemBus());
-    QDBusReply<QVariant> reply = ud2.call("Get", UDISKS2_SERVICE ".PartitionTable", "Type");
+    OrgFreedesktopUDisks2PartitionTableInterface ptif(UDISKS2_SERVICE, d->dbus->path(), QDBusConnection::systemBus());
 
-    const QString &type = reply.value().toString();
+    const QString &type = ptif.type();
 
     if (type.isEmpty()) {
         return InvalidPT;
@@ -441,10 +438,8 @@ QList<QPair<QString, QVariantMap> > DBlockDevice::childConfiguration() const
         return QList<QPair<QString, QVariantMap>>();
     }
 
-    QDBusInterface ud2(UDISKS2_SERVICE, d->dbus->path(), "org.freedesktop.DBus.Properties", QDBusConnection::systemBus());
-    QDBusReply<QVariant> reply = ud2.call("Get", UDISKS2_SERVICE ".Encrypted", "ChildConfiguration");
-
-    return qdbus_cast<QList<QPair<QString, QVariantMap>>>(reply.value());
+    OrgFreedesktopUDisks2EncryptedInterface eif(UDISKS2_SERVICE, d->dbus->path(), QDBusConnection::systemBus());
+    return eif.childConfiguration();
 }
 
 void DBlockDevice::setWatchChanges(bool watchChanges)
@@ -567,22 +562,29 @@ void DBlockDevice::updateConfigurationItem(const QPair<QString, QVariantMap> &ol
  */
 QString DBlockDevice::mount(const QVariantMap &options)
 {
+    if (!hasFileSystem()) {
+        return QString();
+    }
+
     Q_D(const DBlockDevice);
 
-    QDBusInterface ud2(UDISKS2_SERVICE, d->dbus->path(), UDISKS2_SERVICE ".Filesystem", QDBusConnection::systemBus());
-    QDBusReply<QString> reply = ud2.call("Mount", options);
+    OrgFreedesktopUDisks2FilesystemInterface fsif(UDISKS2_SERVICE, d->dbus->path(), QDBusConnection::systemBus());
 
-    return reply.value();
+    auto r = fsif.Mount(options);
+    r.waitForFinished();
+    return r.value();
 }
 
 void DBlockDevice::unmount(const QVariantMap &options)
 {
+    if (!hasFileSystem()) {
+        return;
+    }
+
     Q_D(const DBlockDevice);
 
-    QDBusInterface ud2(UDISKS2_SERVICE, d->dbus->path(), UDISKS2_SERVICE ".Filesystem", QDBusConnection::systemBus());
-    QDBusReply<void> reply = ud2.call("Unmount", options);
-
-    Q_UNUSED(reply)
+    OrgFreedesktopUDisks2FilesystemInterface fsif(UDISKS2_SERVICE, d->dbus->path(), QDBusConnection::systemBus());
+    fsif.Unmount(options).waitForFinished();
 }
 
 /*!
@@ -613,42 +615,65 @@ bool DBlockDevice::canSetLabel() const
  */
 void DBlockDevice::setLabel(const QString &label, const QVariantMap &options)
 {
+    if (!hasFileSystem()) {
+        return;
+    }
+
     Q_D(const DBlockDevice);
 
-    QDBusInterface ud2(UDISKS2_SERVICE, d->dbus->path(), UDISKS2_SERVICE ".Filesystem", QDBusConnection::systemBus());
-    QDBusReply<void> reply = ud2.call("SetLabel", label, options);
-
-    Q_UNUSED(reply)
+    OrgFreedesktopUDisks2FilesystemInterface fsif(UDISKS2_SERVICE, d->dbus->path(), QDBusConnection::systemBus());
+    fsif.SetLabel(label, options).waitForFinished();
 }
 
 void DBlockDevice::changePassphrase(const QString &passphrase, const QString &new_passphrase, const QVariantMap &options)
 {
+    if (!isEncrypted()) {
+        return;
+    }
+
     Q_D(const DBlockDevice);
 
-    QDBusInterface ud2(UDISKS2_SERVICE, d->dbus->path(), UDISKS2_SERVICE ".Encrypted", QDBusConnection::systemBus());
-    QDBusReply<void> reply = ud2.call("ChangePassphrase", passphrase, new_passphrase, options);
-
-    Q_UNUSED(reply)
+    OrgFreedesktopUDisks2EncryptedInterface eif(UDISKS2_SERVICE, d->dbus->path(), QDBusConnection::systemBus());
+    eif.ChangePassphrase(passphrase, new_passphrase, options).waitForFinished();
 }
 
 void DBlockDevice::lock(const QVariantMap &options)
 {
+    if (!isEncrypted()) {
+        return;
+    }
+
     Q_D(const DBlockDevice);
 
-    QDBusInterface ud2(UDISKS2_SERVICE, d->dbus->path(), UDISKS2_SERVICE ".Encrypted", QDBusConnection::systemBus());
-    QDBusReply<void> reply = ud2.call("Lock", options);
-
-    Q_UNUSED(reply)
+    OrgFreedesktopUDisks2EncryptedInterface eif(UDISKS2_SERVICE, d->dbus->path(), QDBusConnection::systemBus());
+    eif.Lock(options).waitForFinished();
 }
 
-void DBlockDevice::unlock(const QString &passphrase, const QVariantMap &options)
+QString DBlockDevice::unlock(const QString &passphrase, const QVariantMap &options)
 {
+    if (!isEncrypted()) {
+        return QString();
+    }
+
     Q_D(const DBlockDevice);
 
-    QDBusInterface ud2(UDISKS2_SERVICE, d->dbus->path(), UDISKS2_SERVICE ".Encrypted", QDBusConnection::systemBus());
-    QDBusReply<void> reply = ud2.call("Unlock", passphrase, options);
+    OrgFreedesktopUDisks2EncryptedInterface eif(UDISKS2_SERVICE, d->dbus->path(), QDBusConnection::systemBus());
 
-    Q_UNUSED(reply)
+    auto r = eif.Unlock(passphrase, options);
+    r.waitForFinished();
+    return r.value().path();
+}
+
+QString DBlockDevice::cleartextDevice()
+{
+    if (!isEncrypted()) {
+        return QString();
+    }
+
+    Q_D(const DBlockDevice);
+
+    OrgFreedesktopUDisks2EncryptedInterface eif(UDISKS2_SERVICE, d->dbus->path(), QDBusConnection::systemBus());
+    return eif.cleartextDevice().path();
 }
 
 DBlockDevice::DBlockDevice(const QString &path, QObject *parent)
