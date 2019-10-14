@@ -33,7 +33,7 @@ namespace UDisks2 {
 Q_GLOBAL_STATIC_WITH_ARGS(OrgFreedesktopDBusObjectManagerInterface, omGlobal, (UDISKS2_SERVICE, "/org/freedesktop/UDisks2", QDBusConnection::systemBus()))
 Q_GLOBAL_STATIC_WITH_ARGS(OrgFreedesktopUDisks2ManagerInterface, umGlobal, (UDISKS2_SERVICE, "/org/freedesktop/UDisks2/Manager", QDBusConnection::systemBus()))
 
-bool interfaceIsExistes(const QString &path, const QString &interface)
+bool interfaceExists(const QString &path, const QString &interface)
 {
     QDBusInterface ud2(UDISKS2_SERVICE, path, "org.freedesktop.DBus.Introspectable", QDBusConnection::systemBus());
     QDBusReply<QString> reply = ud2.call("Introspect");

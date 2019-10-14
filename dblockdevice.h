@@ -71,6 +71,7 @@ class DBlockDevice : public QObject
     Q_PROPERTY(PTType ptType READ ptType NOTIFY ptTypeChanged)
     // of Encrypted
     Q_PROPERTY(QList<QPair<QString, QVariantMap>> childConfiguration READ childConfiguration NOTIFY childConfigurationChanged)
+    Q_PROPERTY(QString cleartextDevice READ cleartextDevice NOTIFY cleartextDeviceChanged)
 
 public:
     // partition table type
@@ -181,7 +182,8 @@ public Q_SLOTS:
     // of Encrypted
     void changePassphrase(const QString &passphrase, const QString &new_passphrase, const QVariantMap &options);
     void lock(const QVariantMap &options);
-    void unlock(const QString &passphrase, const QVariantMap &options);
+    QString unlock(const QString &passphrase, const QVariantMap &options);
+    QString cleartextDevice();
 
 Q_SIGNALS:
     void hasFileSystemChanged(bool hasFileSystem);
@@ -211,6 +213,7 @@ Q_SIGNALS:
     void ptTypeChanged();
     void mountPointsChanged(const QByteArrayList &mountPoints);
     void childConfigurationChanged(QList<QPair<QString, QVariantMap>> childConfiguration);
+    void cleartextDeviceChanged(const QString &cleartextDevice);
 
 protected:
     explicit DBlockDevice(const QString &path, QObject *parent = nullptr);
