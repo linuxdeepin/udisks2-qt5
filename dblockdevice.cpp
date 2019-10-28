@@ -442,6 +442,12 @@ QList<QPair<QString, QVariantMap> > DBlockDevice::childConfiguration() const
     return eif.childConfiguration();
 }
 
+QDBusError DBlockDevice::lastError() const
+{
+    Q_D(const DBlockDevice);
+    return d->err;
+}
+
 void DBlockDevice::setWatchChanges(bool watchChanges)
 {
     Q_D(DBlockDevice);
@@ -477,14 +483,18 @@ void DBlockDevice::addConfigurationItem(const QPair<QString, QVariantMap> &item,
 {
     Q_D(DBlockDevice);
 
-    d->dbus->AddConfigurationItem(item, options);
+    auto r = d->dbus->AddConfigurationItem(item, options);
+    r.waitForFinished();
+    d->err = r.error();
 }
 
 void DBlockDevice::format(const QString &type, const QVariantMap &options)
 {
     Q_D(DBlockDevice);
 
-    d->dbus->Format(type, options);
+    auto r = d->dbus->Format(type, options);
+    r.waitForFinished();
+    d->err = r.error();
 }
 
 void DBlockDevice::format(const DBlockDevice::FSType &type, const QVariantMap &options)
@@ -499,56 +509,77 @@ QList<QPair<QString, QVariantMap> > DBlockDevice::getSecretConfiguration(const Q
 {
     Q_D(DBlockDevice);
 
-    return d->dbus->GetSecretConfiguration(options);
+    auto r = d->dbus->GetSecretConfiguration(options);
+    r.waitForFinished();
+    d->err = r.error();
+    return r.value();
 }
 
 QDBusUnixFileDescriptor DBlockDevice::openDevice(const QString &mode, const QVariantMap &options)
 {
     Q_D(DBlockDevice);
 
-    return d->dbus->OpenDevice(mode, options);
+    auto r = d->dbus->OpenDevice(mode, options);
+    r.waitForFinished();
+    d->err = r.error();
+    return r.value();
 }
 
 QDBusUnixFileDescriptor DBlockDevice::openForBackup(const QVariantMap &options)
 {
     Q_D(DBlockDevice);
 
-    return d->dbus->OpenForBackup(options);
+    auto r = d->dbus->OpenForBackup(options);
+    r.waitForFinished();
+    d->err = r.error();
+    return r.value();
 }
 
 QDBusUnixFileDescriptor DBlockDevice::openForBenchmark(const QVariantMap &options)
 {
     Q_D(DBlockDevice);
 
-    return d->dbus->OpenForBenchmark(options);
+    auto r = d->dbus->OpenForBenchmark(options);
+    r.waitForFinished();
+    d->err = r.error();
+    return r.value();
 }
 
 QDBusUnixFileDescriptor DBlockDevice::openForRestore(const QVariantMap &options)
 {
     Q_D(DBlockDevice);
 
-    return d->dbus->OpenForRestore(options);
+    auto r = d->dbus->OpenForRestore(options);
+    r.waitForFinished();
+    d->err = r.error();
+    return r.value();
 }
 
 void DBlockDevice::removeConfigurationItem(const QPair<QString, QVariantMap> &item, const QVariantMap &options)
 {
     Q_D(DBlockDevice);
 
-    d->dbus->RemoveConfigurationItem(item, options);
+    auto r = d->dbus->RemoveConfigurationItem(item, options);
+    r.waitForFinished();
+    d->err = r.error();
 }
 
 void DBlockDevice::rescan(const QVariantMap &options)
 {
     Q_D(DBlockDevice);
 
-    d->dbus->Rescan(options);
+    auto r = d->dbus->Rescan(options);
+    r.waitForFinished();
+    d->err = r.error();
 }
 
 void DBlockDevice::updateConfigurationItem(const QPair<QString, QVariantMap> &old_item, const QPair<QString, QVariantMap> &new_item, const QVariantMap &options)
 {
     Q_D(DBlockDevice);
 
-    d->dbus->UpdateConfigurationItem(old_item, new_item, options);
+    auto r = d->dbus->UpdateConfigurationItem(old_item, new_item, options);
+    r.waitForFinished();
+    d->err = r.error();
 }
 
 /*!
@@ -566,12 +597,13 @@ QString DBlockDevice::mount(const QVariantMap &options)
         return QString();
     }
 
-    Q_D(const DBlockDevice);
+    Q_D(DBlockDevice);
 
     OrgFreedesktopUDisks2FilesystemInterface fsif(UDISKS2_SERVICE, d->dbus->path(), QDBusConnection::systemBus());
 
     auto r = fsif.Mount(options);
     r.waitForFinished();
+    d->err = r.error();
     return r.value();
 }
 
@@ -581,10 +613,12 @@ void DBlockDevice::unmount(const QVariantMap &options)
         return;
     }
 
-    Q_D(const DBlockDevice);
+    Q_D(DBlockDevice);
 
     OrgFreedesktopUDisks2FilesystemInterface fsif(UDISKS2_SERVICE, d->dbus->path(), QDBusConnection::systemBus());
-    fsif.Unmount(options).waitForFinished();
+    auto r = fsif.Unmount(options);
+    r.waitForFinished();
+    d->err = r.error();
 }
 
 /*!
@@ -619,10 +653,12 @@ void DBlockDevice::setLabel(const QString &label, const QVariantMap &options)
         return;
     }
 
-    Q_D(const DBlockDevice);
+    Q_D(DBlockDevice);
 
     OrgFreedesktopUDisks2FilesystemInterface fsif(UDISKS2_SERVICE, d->dbus->path(), QDBusConnection::systemBus());
-    fsif.SetLabel(label, options).waitForFinished();
+    auto r = fsif.SetLabel(label, options);
+    r.waitForFinished();
+    d->err = r.error();
 }
 
 void DBlockDevice::changePassphrase(const QString &passphrase, const QString &new_passphrase, const QVariantMap &options)
@@ -631,10 +667,12 @@ void DBlockDevice::changePassphrase(const QString &passphrase, const QString &ne
         return;
     }
 
-    Q_D(const DBlockDevice);
+    Q_D(DBlockDevice);
 
     OrgFreedesktopUDisks2EncryptedInterface eif(UDISKS2_SERVICE, d->dbus->path(), QDBusConnection::systemBus());
-    eif.ChangePassphrase(passphrase, new_passphrase, options).waitForFinished();
+    auto r = eif.ChangePassphrase(passphrase, new_passphrase, options);
+    r.waitForFinished();
+    d->err = r.error();
 }
 
 void DBlockDevice::lock(const QVariantMap &options)
@@ -643,10 +681,12 @@ void DBlockDevice::lock(const QVariantMap &options)
         return;
     }
 
-    Q_D(const DBlockDevice);
+    Q_D(DBlockDevice);
 
     OrgFreedesktopUDisks2EncryptedInterface eif(UDISKS2_SERVICE, d->dbus->path(), QDBusConnection::systemBus());
-    eif.Lock(options).waitForFinished();
+    QDBusPendingReply<void> r = eif.Lock(options);
+    r.waitForFinished();
+    d->err = r.error();
 }
 
 QString DBlockDevice::unlock(const QString &passphrase, const QVariantMap &options)
@@ -655,12 +695,13 @@ QString DBlockDevice::unlock(const QString &passphrase, const QVariantMap &optio
         return QString();
     }
 
-    Q_D(const DBlockDevice);
+    Q_D(DBlockDevice);
 
     OrgFreedesktopUDisks2EncryptedInterface eif(UDISKS2_SERVICE, d->dbus->path(), QDBusConnection::systemBus());
 
     auto r = eif.Unlock(passphrase, options);
     r.waitForFinished();
+    d->err = r.error();
     return r.value().path();
 }
 

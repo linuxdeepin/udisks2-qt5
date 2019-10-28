@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QVariantMap>
 #include <QDBusUnixFileDescriptor>
+#include <QDBusError>
 
 class QDBusObjectPath;
 
@@ -157,6 +158,8 @@ public:
     PTType ptType() const;
 
     QList<QPair<QString, QVariantMap>> childConfiguration() const;
+
+    QDBusError lastError() const;
 
 public Q_SLOTS:
     void setWatchChanges(bool watchChanges);

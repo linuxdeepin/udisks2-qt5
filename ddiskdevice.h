@@ -23,6 +23,7 @@
 
 #include <QObject>
 #include <QVariantMap>
+#include <QDBusError>
 
 class DDiskDevicePrivate;
 class DDiskDevice : public QObject
@@ -93,6 +94,8 @@ public:
     qulonglong timeMediaDetected() const;
     QString vendor() const;
     QString WWN() const;
+
+    QDBusError lastError() const;
 
 public Q_SLOTS: // METHODS
     void eject(const QVariantMap &options);

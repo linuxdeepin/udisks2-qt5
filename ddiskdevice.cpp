@@ -25,6 +25,7 @@ class DDiskDevicePrivate
 {
 public:
     OrgFreedesktopUDisks2DriveInterface *dbus = nullptr;
+    QDBusError err;
 };
 
 DDiskDevice::DDiskDevice(const QString &path, QObject *parent)
@@ -191,17 +192,35 @@ QString DDiskDevice::WWN() const
     return d_ptr->dbus->wWN();
 }
 
+QDBusError DDiskDevice::lastError() const
+{
+    Q_D(const DDiskDevice);
+    return d->err;
+}
+
 void DDiskDevice::eject(const QVariantMap &options)
 {
-    d_ptr->dbus->Eject(options);
+    Q_D(DDiskDevice);
+
+    auto r = d_ptr->dbus->Eject(options);
+    r.waitForFinished();
+    d->err = r.error();
 }
 
 void DDiskDevice::powerOff(const QVariantMap &options)
 {
-    d_ptr->dbus->PowerOff(options);
+    Q_D(DDiskDevice);
+
+    auto r = d_ptr->dbus->PowerOff(options);
+    r.waitForFinished();
+    d->err = r.error();
 }
 
 void DDiskDevice::setConfiguration(const QVariantMap &value, const QVariantMap &options)
 {
-    d_ptr->dbus->SetConfiguration(value, options);
+    Q_D(DDiskDevice);
+
+    auto r = d_ptr->dbus->SetConfiguration(value, options);
+    r.waitForFinished();
+    d->err = r.error();
 }

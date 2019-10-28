@@ -37,6 +37,7 @@ public:
     OrgFreedesktopUDisks2BlockInterface *dbus;
     bool watchChanges = false;
     DBlockDevice *q_ptr;
+    QDBusError err;
 
     void _q_onInterfacesAdded(const QDBusObjectPath &object_path, const QMap<QString, QVariantMap> &interfaces_and_properties);
     void _q_onInterfacesRemoved(const QDBusObjectPath &object_path, const QStringList &interfaces);
