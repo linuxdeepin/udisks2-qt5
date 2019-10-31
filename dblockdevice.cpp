@@ -492,9 +492,11 @@ void DBlockDevice::format(const QString &type, const QVariantMap &options)
 {
     Q_D(DBlockDevice);
 
+    d->dbus->setTimeout(INT_MAX);
     auto r = d->dbus->Format(type, options);
     r.waitForFinished();
     d->err = r.error();
+    d->dbus->setTimeout(-1);
 }
 
 void DBlockDevice::format(const DBlockDevice::FSType &type, const QVariantMap &options)

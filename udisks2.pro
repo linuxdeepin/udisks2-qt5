@@ -10,7 +10,8 @@ SOURCES += \
     $$PWD/ddiskmanager.cpp \
     $$PWD/udisks2_dbus_common.cpp \
     $$PWD/dblockdevice.cpp \
-    $$PWD/dblockpartition.cpp
+    $$PWD/dblockpartition.cpp \
+    $$PWD/dudisksjob.cpp
 
 udisk2.files = $$PWD/org.freedesktop.UDisks2.xml
 udisk2.header_flags = -i $$PWD/udisks2_dbus_common.h -N
@@ -22,7 +23,8 @@ HEADERS += \
     $$PWD/udisks2_dbus_common.h \
     $$PWD/ddiskmanager.h \
     $$PWD/dblockdevice.h \
-    $$PWD/dblockpartition.h
+    $$PWD/dblockpartition.h \
+    $$PWD/dudisksjob.h
 
 include($$PWD/private/private.pri)
 

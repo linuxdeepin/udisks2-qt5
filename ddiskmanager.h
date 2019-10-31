@@ -33,6 +33,7 @@ QT_END_NAMESPACE
 class DBlockDevice;
 class DBlockPartition;
 class DDiskDevice;
+class DUDisksJob;
 class DDiskManagerPrivate;
 class DDiskManager : public QObject
 {
@@ -59,6 +60,7 @@ public:
     DBlockPartition *createBlockPartitionByMountPoint(const QByteArray &path, QObject *parent = nullptr) const;
     DBlockPartition *createBlockPartition(const QStorageInfo &info, QObject *parent = nullptr) const;
     static DDiskDevice *createDiskDevice(const QString &path, QObject *parent = nullptr);
+    static DUDisksJob *createJob(const QString &path, QObject *parent = nullptr);
 
     static QDBusError lastError();
 
@@ -75,6 +77,7 @@ Q_SIGNALS:
     void mountAdded(const QString &blockDevicePath, const QByteArray &mountPoint);
     void mountRemoved(const QString &blockDevicePath, const QByteArray &mountPoint);
     void mountPointsChanged(const QString &blockDevicePath, const QByteArrayList &oldMountPoints, const QByteArrayList &newMountPoints);
+    void jobAdded(const QString &jobPath);
     void opticalChanged(const QString &path);
 
 private:

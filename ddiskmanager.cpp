@@ -24,6 +24,7 @@
 #include "dblockdevice.h"
 #include "dblockpartition.h"
 #include "ddiskdevice.h"
+#include "dudisksjob.h"
 
 #include <QDBusInterface>
 #include <QDBusReply>
@@ -118,6 +119,7 @@ void DDiskManager::onInterfacesAdded(const QDBusObjectPath &object_path, const Q
     const QString &path = object_path.path();
     const QString &path_drive = QStringLiteral("/org/freedesktop/UDisks2/drives/");
     const QString &path_device = QStringLiteral("/org/freedesktop/UDisks2/block_devices/");
+    const QString &path_job = QStringLiteral("/org/freedesktop/UDisks2/jobs/");
 
     Q_D(DDiskManager);
 
@@ -163,6 +165,10 @@ void DDiskManager::onInterfacesAdded(const QDBusObjectPath &object_path, const Q
             d->blockDeviceMountPointsMap.remove(object_path.path());
 
             Q_EMIT fileSystemAdded(path);
+        }
+    } else if (path.startsWith(path_job)) {
+        if (interfaces_and_properties.contains(QStringLiteral(UDISKS2_SERVICE ".Job"))) {
+            Q_EMIT jobAdded(path);
         }
     }
 }
@@ -354,6 +360,11 @@ DBlockPartition *DDiskManager::createBlockPartition(const QStorageInfo &info, QO
 DDiskDevice *DDiskManager::createDiskDevice(const QString &path, QObject *parent)
 {
     return new DDiskDevice(path, parent);
+}
+
+DUDisksJob *DDiskManager::createJob(const QString &path, QObject *parent)
+{
+    return new DUDisksJob(path, parent);
 }
 
 QDBusError DDiskManager::lastError()
