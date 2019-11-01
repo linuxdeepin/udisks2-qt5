@@ -32,6 +32,10 @@ class DUDisksJobPrivate
     Q_DECLARE_PUBLIC(DUDisksJob)
 };
 
+DUDisksJob::~DUDisksJob()
+{
+}
+
 QString DUDisksJob::path() const
 {
     Q_D(const DUDisksJob);
