@@ -20,6 +20,7 @@
  */
 #include "ddiskmanager.h"
 #include "udisks2_dbus_common.h"
+#include "udisks2_interface.h"
 #include "objectmanager_interface.h"
 #include "dblockdevice.h"
 #include "dblockpartition.h"
@@ -32,6 +33,8 @@
 #include <QDBusMetaType>
 #include <QScopedPointer>
 #include <QDebug>
+
+const QString ManagerPath = "/org/freedesktop/UDisks2/Manager";
 
 static int udisks2VersionCompare(const QString &version)
 {
@@ -365,6 +368,84 @@ DDiskDevice *DDiskManager::createDiskDevice(const QString &path, QObject *parent
 DUDisksJob *DDiskManager::createJob(const QString &path, QObject *parent)
 {
     return new DUDisksJob(path, parent);
+}
+
+QStringList DDiskManager::supportedFilesystems()
+{
+    OrgFreedesktopUDisks2ManagerInterface udisksmgr(UDISKS2_SERVICE, ManagerPath, QDBusConnection::systemBus());
+    return udisksmgr.supportedFilesystems();
+}
+
+QStringList DDiskManager::supportedEncryptionTypes()
+{
+    OrgFreedesktopUDisks2ManagerInterface udisksmgr(UDISKS2_SERVICE, ManagerPath, QDBusConnection::systemBus());
+    return udisksmgr.supportedEncryptionTypes();
+}
+
+bool DDiskManager::canCheck(const QString &type, QString *requiredUtil)
+{
+    OrgFreedesktopUDisks2ManagerInterface udisksmgr(UDISKS2_SERVICE, ManagerPath, QDBusConnection::systemBus());
+    auto r = udisksmgr.CanCheck(type);
+    r.waitForFinished();
+    if (r.isError()) {
+        return false;
+    }
+    if (requiredUtil) {
+        *requiredUtil = r.value().second;
+    }
+    return r.value().first;
+}
+
+bool DDiskManager::canFormat(const QString &type, QString *requiredUtil)
+{
+    OrgFreedesktopUDisks2ManagerInterface udisksmgr(UDISKS2_SERVICE, ManagerPath, QDBusConnection::systemBus());
+    auto r = udisksmgr.CanFormat(type);
+    r.waitForFinished();
+    if (r.isError()) {
+        return false;
+    }
+    if (requiredUtil) {
+        *requiredUtil = r.value().second;
+    }
+    return r.value().first;
+}
+
+bool DDiskManager::canRepair(const QString &type, QString *requiredUtil)
+{
+    OrgFreedesktopUDisks2ManagerInterface udisksmgr(UDISKS2_SERVICE, ManagerPath, QDBusConnection::systemBus());
+    auto r = udisksmgr.CanRepair(type);
+    r.waitForFinished();
+    if (r.isError()) {
+        return false;
+    }
+    if (requiredUtil) {
+        *requiredUtil = r.value().second;
+    }
+    return r.value().first;
+}
+
+bool DDiskManager::canResize(const QString &type, QString *requiredUtil)
+{
+    OrgFreedesktopUDisks2ManagerInterface udisksmgr(UDISKS2_SERVICE, ManagerPath, QDBusConnection::systemBus());
+    auto r = udisksmgr.CanRepair(type);
+    r.waitForFinished();
+    if (r.isError()) {
+        return false;
+    }
+    if (requiredUtil) {
+        *requiredUtil = r.value().second;
+    }
+    return r.value().first;
+}
+
+QString DDiskManager::loopSetup(int fd, QVariantMap options)
+{
+    OrgFreedesktopUDisks2ManagerInterface udisksmgr(UDISKS2_SERVICE, ManagerPath, QDBusConnection::systemBus());
+    QDBusUnixFileDescriptor dbusfd;
+    dbusfd.setFileDescriptor(fd);
+    auto r = udisksmgr.LoopSetup(dbusfd, options);
+    r.waitForFinished();
+    return r.value().path();
 }
 
 QDBusError DDiskManager::lastError()

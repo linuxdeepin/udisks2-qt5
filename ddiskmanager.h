@@ -62,6 +62,14 @@ public:
     static DDiskDevice *createDiskDevice(const QString &path, QObject *parent = nullptr);
     static DUDisksJob *createJob(const QString &path, QObject *parent = nullptr);
 
+    static QStringList supportedFilesystems();
+    static QStringList supportedEncryptionTypes();
+    static bool canCheck(const QString &type, QString *requiredUtil = nullptr);
+    static bool canFormat(const QString &type, QString *requiredUtil = nullptr);
+    static bool canRepair(const QString &type, QString *requiredUtil = nullptr);
+    static bool canResize(const QString &type, QString *requiredUtil = nullptr);
+    static QString loopSetup(int fd, QVariantMap options);
+
     static QDBusError lastError();
 
 public Q_SLOTS:
