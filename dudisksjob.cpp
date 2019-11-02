@@ -25,7 +25,10 @@
 
 class DUDisksJobPrivate
 {
-    DUDisksJobPrivate(DUDisksJob *q);
+    DUDisksJobPrivate(DUDisksJob *)
+    {
+
+    }
     DUDisksJob *q_ptr;
     OrgFreedesktopUDisks2JobInterface *dbusif;
 
