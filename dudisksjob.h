@@ -68,7 +68,10 @@ private:
     QScopedPointer<DUDisksJobPrivate> d_ptr;
 
     explicit DUDisksJob(QString path, QObject *parent = nullptr);
+
+private Q_SLOTS:
     void onPropertiesChanged(const QString &interface, const QVariantMap &changed_properties);
+
     friend class DDiskManager;
 };
 #endif
