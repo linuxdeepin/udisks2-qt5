@@ -382,6 +382,25 @@ QStringList DDiskManager::supportedEncryptionTypes()
     return udisksmgr.supportedEncryptionTypes();
 }
 
+QStringList DDiskManager::resolveDevice(QVariantMap devspec, QVariantMap options)
+{
+    OrgFreedesktopUDisks2ManagerInterface udisksmgr(UDISKS2_SERVICE, ManagerPath, QDBusConnection::systemBus());
+    QStringList ret;
+    auto devices = udisksmgr.ResolveDevice(devspec, options);
+    devices.waitForFinished();
+    if (!devices.isError()) {
+        for (auto &d : devices.value()) {
+            ret.push_back(d.path());
+        }
+    }
+    return ret;
+}
+
+QStringList DDiskManager::resolveDeviceNode(QString devnode, QVariantMap options)
+{
+    return resolveDevice({{"path", QVariant(devnode)}}, options);
+}
+
 bool DDiskManager::canCheck(const QString &type, QString *requiredUtil)
 {
     OrgFreedesktopUDisks2ManagerInterface udisksmgr(UDISKS2_SERVICE, ManagerPath, QDBusConnection::systemBus());

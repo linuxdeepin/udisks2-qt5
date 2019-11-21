@@ -64,6 +64,8 @@ public:
 
     static QStringList supportedFilesystems();
     static QStringList supportedEncryptionTypes();
+    static QStringList resolveDevice(QVariantMap devspec, QVariantMap options);
+    static QStringList resolveDeviceNode(QString devnode, QVariantMap options);
     static bool canCheck(const QString &type, QString *requiredUtil = nullptr);
     static bool canFormat(const QString &type, QString *requiredUtil = nullptr);
     static bool canRepair(const QString &type, QString *requiredUtil = nullptr);
