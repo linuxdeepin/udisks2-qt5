@@ -285,6 +285,20 @@ QStringList DDiskManager::diskDevices() const
     return getDBusNodeNameList(UDISKS2_SERVICE, "/org/freedesktop/UDisks2/drives", QDBusConnection::systemBus());
 }
 
+QStringList DDiskManager::blockDevices(QVariantMap options)
+{
+    OrgFreedesktopUDisks2ManagerInterface udisksmgr(UDISKS2_SERVICE, ManagerPath, QDBusConnection::systemBus());
+
+    auto reply = udisksmgr.GetBlockDevices(options);
+    reply.waitForFinished();
+    QList<QDBusObjectPath> resultList = reply.value();
+    QStringList dbusPaths;
+    for (const QDBusObjectPath &singleResult : resultList) {
+        dbusPaths << singleResult.path();
+    }
+    return dbusPaths;
+}
+
 bool DDiskManager::watchChanges() const
 {
     Q_D(const DDiskManager);

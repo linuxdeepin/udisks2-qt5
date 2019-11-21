@@ -46,8 +46,10 @@ public:
     explicit DDiskManager(QObject *parent = nullptr);
     ~DDiskManager();
 
-    QStringList blockDevices() const;
+    Q_DECL_DEPRECATED_X("Use the static variant instead") QStringList blockDevices() const;
     QStringList diskDevices() const;
+
+    static QStringList blockDevices(QVariantMap options);
 
     bool watchChanges() const;
 
