@@ -4,7 +4,7 @@ Release:        3%{?dist}
 Summary:        Qt5 binding for udisks2
 License:        GPLv3+
 URL:            https://github.com/linuxdeepin/udisks2-qt5
-Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
+Source0:        %{url}/archive/%{version}/%{name}_%{version}.tar.gz
 BuildRequires:  gcc-c++
 BuildRequires:  pkgconfig(Qt5Core)
 
