@@ -13,7 +13,7 @@ This package provides a Qt5 binding for udisks2.
 
 %package devel
 Summary:        Development package for %{name}
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       %{name}%{?_isa} = %{version}_%{release}
 Requires:       qt5-qtbase-devel%{?isa}
 
 %description devel
