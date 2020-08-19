@@ -139,7 +139,6 @@ void DUDisksJob::onPropertiesChanged(const QString &interface, const QVariantMap
 
         if (pindex < 0) {
             property_name[0] = property_name.at(0).toLower();
-
             pindex = this->metaObject()->indexOfProperty(property_name.toLatin1().constData());
         }
 
