@@ -1,12 +1,14 @@
 /*
- * Copyright (C) 2017 ~ 2018 Deepin Technology Co., Ltd.
+ * Copyright (C) 2020 UOS Technology Co., Ltd.
  *
- * Author:     zccrs <zccrs@live.com>
+ * Author:     zccrs <zhangjide@deepin.com>
  *
- * Maintainer: zccrs <zhangjide@deepin.com>
+ * Maintainer: xushitong<xushitong@uniontech.com>
+ *             max-lv<lvwujun@uniontech.com>
+ *             zhangsheng<zhangsheng@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
+ * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * any later version.
  *
@@ -15,7 +17,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
+ * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #ifndef DBLOCKPARTITION_H
@@ -117,8 +119,10 @@ public:
         DRDOS_sec_FAT12 = 0xbb,
         DRDOS_sec_FAT16_Less_32M = 0xc1,
         DRDOS_sec_FAT16 = 0xc4,
+        DRDOS_sec_extend = 0xc5,
         Syrinx = 0xc6,
         Non_FS_data = 0xc7,
+        Multiuser_DOS_extend = 0xd5,
         CP_M_CTOS_dot_dot_dot = 0xda,
         Dell_Utility = 0xdb,
         BootIt = 0xde,
