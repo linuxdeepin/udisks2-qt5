@@ -33,4 +33,4 @@ We encourage you to report issues and contribute changes
 
 ## License
 
-udisks2-qt5 is licensed under [GPL-3.0-or-later](LICENSE)
+udisks2-qt5 is licensed under [GPL-3.0-or-later](LICENSE.txt)

@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2020 - 2022 UnionTech Software Technology Co., Ltd.
 //
-// SPDX-License-Identifier: LGPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #ifndef DDISKMANAGER_H
 #define DDISKMANAGER_H

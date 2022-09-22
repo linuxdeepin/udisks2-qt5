@@ -34,4 +34,4 @@ $ sudo make install
 
 ## 开源许可证
 
-udisks2-qt5 在 [GPL-3.0-or-later](LICENSE)下发布。
+udisks2-qt5 在 [GPL-3.0-or-later](LICENSE.txt)下发布。
