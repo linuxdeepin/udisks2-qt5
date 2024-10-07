@@ -1,0 +1,11 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include/udisks2-qt5
+
+
+Name: udisks2-qt5
+Description: UDisks2 Library with Qt5
+Version: 0.0.1
+Libs: -ludisks2-qt5
+Cflags: -I${includedir}
